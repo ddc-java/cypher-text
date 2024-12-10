@@ -31,6 +31,6 @@ dependencyResolutionManagement {
 }
 
 // TODO Update for project name.
-rootProject.name = "capstone-project"
+rootProject.name = "cypher-text"
 
 include(":app", ":server")
