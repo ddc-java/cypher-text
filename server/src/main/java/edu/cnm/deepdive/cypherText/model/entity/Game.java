@@ -25,17 +25,17 @@ public class Game {
 
   private UUID key;
 
-  private UUID user;
+  private UUID userId;
 
   private Long quoteId;
 
   private boolean solved;
 
   // TODO: 12/9/2024 one to many
-  private HashMap<String, String> gameCypherMap = new HashMap<>();
+//  private HashMap<String, String> gameCypherMap = new HashMap<>();
 
   // TODO: 12/9/2024 one to many
-  private HashMap<String, String> userCypherMap = new HashMap<>();
+//  private HashMap<String, String> userCypherMap = new HashMap<>();
 
   public boolean isSolved() {
     return false;

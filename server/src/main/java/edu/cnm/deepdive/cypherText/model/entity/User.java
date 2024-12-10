@@ -70,11 +70,11 @@ public class User {
   @JsonIgnore
   private String oauthKey;
 
-  @NonNull
-  @OneToMany(mappedBy = "user", fetch = FetchType.LAZY,
-      cascade = CascadeType.ALL)
-  @JsonIgnore
-  private final List<Game> games = new LinkedList<>();
+//  @NonNull
+//  @OneToMany(mappedBy = "user", fetch = FetchType.LAZY,
+//      cascade = CascadeType.ALL)
+//  @JsonIgnore
+//  private final List<Game> games = new LinkedList<>();
 
   /**
    * Gets user object's id.
@@ -150,10 +150,10 @@ public class User {
    * Gets User's UserGame.
    *
    */
-  @NonNull
-  public List<Game> getGames() {
-    return games;
-  }
+//  @NonNull
+//  public List<Game> getGames() {
+//    return games;
+//  }
 
   @Override
   public int hashCode() {

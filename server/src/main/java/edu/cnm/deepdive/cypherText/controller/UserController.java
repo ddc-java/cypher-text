@@ -1,7 +1,7 @@
 package edu.cnm.deepdive.cypherText.controller;
 
-import edu.cnm.deepdive.codebreaker.model.entity.User;
-import edu.cnm.deepdive.codebreaker.service.AbstractUserService;
+import edu.cnm.deepdive.cypherText.model.entity.User;
+import edu.cnm.deepdive.cypherText.service.AbstractUserService;
 import java.util.Set;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,19 +29,19 @@ public class UserController {
     return userService.getCurrentUser();
   }
 
-  @GetMapping(path = "/me/follows", produces = MediaType.APPLICATION_JSON_VALUE)
-  public Set<User> getFollows () {
-    return userService.getFollows(userService.getCurrentUser());
-  }
-
-  @GetMapping(path = "me/followers", produces = MediaType.APPLICATION_JSON_VALUE)
-  public Set<User> getFollowers() {
-    return userService.getFollowers(userService.getCurrentUser());
-  }
-
-  @PutMapping(path = "/me/follows/{followedKey}",
-      consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-  public boolean follow(@PathVariable UUID followedKey, @RequestBody boolean following){
-    return userService.follow(followedKey, userService.getCurrentUser(), following);
-  }
+//  @GetMapping(path = "/me/follows", produces = MediaType.APPLICATION_JSON_VALUE)
+//  public Set<User> getFollows () {
+//    return userService.getFollows(userService.getCurrentUser());
+//  }
+//
+//  @GetMapping(path = "me/followers", produces = MediaType.APPLICATION_JSON_VALUE)
+//  public Set<User> getFollowers() {
+//    return userService.getFollowers(userService.getCurrentUser());
+//  }
+//
+//  @PutMapping(path = "/me/follows/{followedKey}",
+//      consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+//  public boolean follow(@PathVariable UUID followedKey, @RequestBody boolean following){
+//    return userService.follow(followedKey, userService.getCurrentUser(), following);
+//  }
 }
