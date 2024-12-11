@@ -38,7 +38,7 @@ public class User {
   @Id
   @NonNull
   @GeneratedValue
-  @Column(name = "user_profile_id", nullable = false, updatable = false)
+  @Column(name = "user_id", nullable = false, updatable = false)
   @JsonIgnore
   private Long id;
 
@@ -70,11 +70,11 @@ public class User {
   @JsonIgnore
   private String oauthKey;
 
-//  @NonNull
-//  @OneToMany(mappedBy = "user", fetch = FetchType.LAZY,
-//      cascade = CascadeType.ALL)
-//  @JsonIgnore
-//  private final List<Game> games = new LinkedList<>();
+  @NonNull
+  @OneToMany(mappedBy = "user", fetch = FetchType.LAZY,
+      cascade = CascadeType.ALL)
+  @JsonIgnore
+  private final List<Game> games = new LinkedList<>();
 
   /**
    * Gets user object's id.
@@ -147,13 +147,13 @@ public class User {
   }
 
   /**
-   * Gets User's UserGame.
+   * Gets User's Game.
    *
    */
-//  @NonNull
-//  public List<Game> getGames() {
-//    return games;
-//  }
+  @NonNull
+  public List<Game> getGames() {
+    return games;
+  }
 
   @Override
   public int hashCode() {

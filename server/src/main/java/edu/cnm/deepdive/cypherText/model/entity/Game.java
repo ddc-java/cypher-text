@@ -1,15 +1,25 @@
 package edu.cnm.deepdive.cypherText.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.UUID;
+import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.lang.NonNull;
 
 @Entity
@@ -23,13 +33,38 @@ public class Game {
   @JsonIgnore
   private Long id;
 
+  @NonNull
+  @Column(name = "external_key", nullable = false, updatable = false, unique = true, columnDefinition = "UUID")
   private UUID key;
 
-  private UUID userId;
+  @NonNull
+  @ManyToOne(optional = false, fetch = FetchType.EAGER)
+  @JoinColumn(name = "user_id")
+  @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+  private User user;
 
-  private Long quoteId;
+  @NonNull
+  @Column(nullable = false, updatable = false)
+  @CreationTimestamp
+  @Temporal(TemporalType.TIMESTAMP)
+  @JsonProperty(access = Access.READ_ONLY)
+  private Instant created;
+
+  @NonNull
+  @ManyToOne(optional = false, fetch = FetchType.EAGER)
+  @JsonIgnore
+  @JoinColumn(name = "quote_id", nullable = false, updatable = false)
+  private Quote quote;
 
   private boolean solved;
+
+  public User getUser() {
+    return user;
+  }
+
+  public void setUser(User user) {
+    this.user = user;
+  }
 
   // TODO: 12/9/2024 one to many
 //  private HashMap<String, String> gameCypherMap = new HashMap<>();
@@ -40,6 +75,23 @@ public class Game {
   public boolean isSolved() {
     return false;
     // TODO: 12/9/2024 return the boolean value of the encrypted quote decrypted by the user cypher compared to the original quote.
+  }
+
+  @NonNull
+  public Long getId() {
+    return id;
+  }
+
+  public void setId(@NonNull Long id) {
+    this.id = id;
+  }
+
+  public UUID getKey() {
+    return key;
+  }
+
+  public void setKey(UUID key) {
+    this.key = key;
   }
 
   @PrePersist

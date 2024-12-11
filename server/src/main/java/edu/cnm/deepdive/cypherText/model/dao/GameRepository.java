@@ -10,11 +10,11 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface GameRepository extends JpaRepository<Game, Long> {
 
-  Optional<Game> findGameByKey(UUID key);
+  Optional<Game> findGameByKeyAndUser(UUID key, User user);
 
-  Optional<Game> findGameByUserId(UUID userId);
+  Optional<Game> findGameByUser(User user);
 
-  @Query("SELECT g FROM Game as g WHERE NOT g.solved AND g.userId = :user")
+  @Query("SELECT g FROM Game as g WHERE NOT g.solved AND g.user = :user")
   List<Game> findCurrentGames(User user);
 
 
