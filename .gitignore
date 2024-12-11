@@ -6,6 +6,7 @@ out/
 *.iws
 *.iml
 *.ipr
+*.json
 
 !**/src/main/**/out/
 !**/src/test/**/out/
@@ -75,6 +76,7 @@ nbdist/
 .gradle/
 build/
 local.properties
+server/src/main/resources/application-local.yaml
 
 !**/src/main/**/build/
 !**/src/test/**/build/
@@ -93,8 +95,7 @@ HELP.md
 
 ### Database ###
 
-# TODO Add data directory to this in JDBC/JPA/Spring Data projects with embedded databases!
-# TODO Add database log files located outside the data directory in JDBC/JPA/Spring Data projects!
+**/db
 
 
 ### OS X ###
