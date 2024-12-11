@@ -14,14 +14,20 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<resources>
+<menu
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
 
-  <color name="primary_color">#FF6200EE</color>
-  <color name="primary_color_dark">#FF3700B3</color>
-  <color name="accent_color">#FF03DAC5</color>
+  <item
+    android:id="@+id/settings"
+    android:title="@string/settings_label"
+    android:orderInCategory="1000"
+    app:showAsAction="never"/>
 
-  <color name="save">@color/primary_color_dark</color>
-  <color name="cancel">#FFFF0000</color>
-  <color name="disabled">#60000000</color>
+  <item
+    android:id="@+id/sign_out"
+    android:title="@string/sign_out"
+    android:orderInCategory="2000"
+    app:showAsAction="never"/>
 
-</resources>
+</menu>

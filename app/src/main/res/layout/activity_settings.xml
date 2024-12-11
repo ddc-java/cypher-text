@@ -14,14 +14,9 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<resources>
-
-  <color name="primary_color">#FF6200EE</color>
-  <color name="primary_color_dark">#FF3700B3</color>
-  <color name="accent_color">#FF03DAC5</color>
-
-  <color name="save">@color/primary_color_dark</color>
-  <color name="cancel">#FFFF0000</color>
-  <color name="disabled">#60000000</color>
-
-</resources>
+<androidx.fragment.app.FragmentContainerView
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:id="@+id/settings_fragment_container"
+  android:name="edu.cnm.deepdive.appstarter.controller.SettingsActivity$SettingsFragment"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"/>

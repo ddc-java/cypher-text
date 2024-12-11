@@ -15,13 +15,5 @@
   limitations under the License.
 -->
 <resources>
-
-  <color name="primary_color">#FF6200EE</color>
-  <color name="primary_color_dark">#FF3700B3</color>
-  <color name="accent_color">#FF03DAC5</color>
-
-  <color name="save">@color/primary_color_dark</color>
-  <color name="cancel">#FFFF0000</color>
-  <color name="disabled">#60000000</color>
-
+  <dimen name="half_dynamic_spacing">8dp</dimen>
 </resources>

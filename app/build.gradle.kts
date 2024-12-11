@@ -43,7 +43,7 @@ android {
             "de.mannodermaus.junit5.AndroidJUnit5Builder"
 
         resValue("string", "app_name", project.property("appName") as String)
-        resValue("string", "client_id", getLocalProperty("client_id") ?: "")
+        resValue("string", "client_id", getLocalProperty("clientId") as String)
 
         javaCompileOptions {
             annotationProcessorOptions {
@@ -160,7 +160,7 @@ dependencies {
 }
 
 roomDdl {
-    source.set(project.file("$projectDir/schemas/edu.cnm.deepdive.appstarter.service.LocalDatabase/1.json"))
+    source.set(project.file("$projectDir/schemas/edu.cnm.deepdive.cyphertext.service.LocalDatabase/1.json"))
     destination.set(project.file("$projectDir/../docs/sql/ddl.sql"))
 }
 

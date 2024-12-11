@@ -30,7 +30,6 @@ dependencyResolutionManagement {
     }
 }
 
-// TODO Update for project name.
 rootProject.name = "cypher-text"
 
 include(":app", ":server")
