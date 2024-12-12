@@ -1,20 +1,35 @@
 package edu.cnm.deepdive.cypherText.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
-import org.springframework.lang.NonNull;
 
+@SuppressWarnings("JpaDataSourceORMInspection")
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @Entity
 public class Quote {
 
   @Id
   @GeneratedValue
+  @Column(name = "quote_id", nullable = false, updatable = false)
   private Long id;
 
-  @NonNull
-  @JsonIgnore
+  @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
   private String quote;
 
+  public Long getId() {
+    return id;
+  }
+
+  public String getQuote() {
+    return quote;
+  }
+
+  public void setQuote(String quote) {
+    this.quote = quote;
+  }
 }

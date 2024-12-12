@@ -12,7 +12,7 @@ public interface GameRepository extends JpaRepository<Game, Long> {
 
   Optional<Game> findGameByKeyAndUser(UUID key, User user);
 
-  Optional<Game> findGameByUser(User user);
+  List<Game> findGamesByUser(User user);
 
   @Query("SELECT g FROM Game as g WHERE NOT g.solved AND g.user = :user")
   List<Game> findCurrentGames(User user);

@@ -23,7 +23,6 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.lang.NonNull;
 
 @Entity
-@Table(indexes = @Index(columnList = "game_id, gameCypherMap, userCypherMap"))
 public class Game {
 
   @NonNull
@@ -39,7 +38,7 @@ public class Game {
 
   @NonNull
   @ManyToOne(optional = false, fetch = FetchType.EAGER)
-  @JoinColumn(name = "user_id")
+  @JoinColumn(name = "user_id", nullable = false, updatable = true)
   @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
   private User user;
 
@@ -50,10 +49,10 @@ public class Game {
   @JsonProperty(access = Access.READ_ONLY)
   private Instant created;
 
-  @NonNull
+
   @ManyToOne(optional = false, fetch = FetchType.EAGER)
-  @JsonIgnore
-  @JoinColumn(name = "quote_id", nullable = false, updatable = false)
+//  @JsonIgnore
+  @JoinColumn(name = "quote_id")
   private Quote quote;
 
   private boolean solved;
@@ -77,14 +76,10 @@ public class Game {
     // TODO: 12/9/2024 return the boolean value of the encrypted quote decrypted by the user cypher compared to the original quote.
   }
 
-  @NonNull
   public Long getId() {
     return id;
   }
 
-  public void setId(@NonNull Long id) {
-    this.id = id;
-  }
 
   public UUID getKey() {
     return key;
@@ -92,6 +87,14 @@ public class Game {
 
   public void setKey(UUID key) {
     this.key = key;
+  }
+
+  public Quote getQuote() {
+    return quote;
+  }
+
+  public void setQuote( Quote quote) {
+    this.quote = quote;
   }
 
   @PrePersist
