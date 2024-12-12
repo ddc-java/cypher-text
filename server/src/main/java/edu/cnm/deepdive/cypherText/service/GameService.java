@@ -15,12 +15,15 @@ import org.springframework.stereotype.Service;
 public class GameService implements AbstractGameService{
 
   private final GameRepository gameRepository;
+  private final QuoteRepository quoteRepository;
 //  private final QuoteRepository quoteRepository;
 
   @Autowired
-  public GameService(GameRepository gameRepository /*, QuoteRepository quoteRepository */) {
+  public GameService(GameRepository gameRepository, /*, QuoteRepository quoteRepository */
+      QuoteRepository quoteRepository) {
     this.gameRepository = gameRepository;
 //    this.quoteRepository = quoteRepository;
+    this.quoteRepository = quoteRepository;
   }
 
   @Override
@@ -32,7 +35,7 @@ public class GameService implements AbstractGameService{
     } else {
       gameToPlay = game;
       gameToPlay.setUser(user);
-      gameToPlay.setQuote(null);
+      gameToPlay.setQuote(quoteRepository.findQuoteById(5L));
 //      gameToPlay.setQuote(quoteRepository.findRandomQuote());
     }
     return gameRepository.save(game);
