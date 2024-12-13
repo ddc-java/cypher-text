@@ -40,7 +40,8 @@ public class GameController {
             .get(createdGame.getKey())).toUri();
     return ResponseEntity.created(location).body(createdGame);
   }
-@GetMapping(path = "/{gameKey}", produces =MediaType.APPLICATION_JSON_VALUE)
+
+  @GetMapping(path = "/{gameKey}", produces = MediaType.APPLICATION_JSON_VALUE)
   public Game get(@PathVariable UUID gameKey) {
     return gameService.getGame(gameKey, userService.getCurrentUser());
   }

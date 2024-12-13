@@ -38,7 +38,7 @@ public class GameService implements AbstractGameService{
       gameToPlay.setQuote(quoteRepository.findQuoteById(5L));
 //      gameToPlay.setQuote(quoteRepository.findRandomQuote());
     }
-    return gameRepository.save(game);
+    return gameRepository.save(gameToPlay);
   }
 
   @Override
