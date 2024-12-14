@@ -6,22 +6,29 @@ import edu.cnm.deepdive.cypherText.model.dao.UserRepository;
 import edu.cnm.deepdive.cypherText.model.entity.Game;
 import edu.cnm.deepdive.cypherText.model.entity.User;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.function.Function;
 import java.util.random.RandomGenerator;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 @Profile("service")
 @Service
-public class GameService implements AbstractGameService{
+public class GameService implements AbstractGameService {
 
+  private static final String ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  private static final int LENGTH = ALPHABET.length();
   private final GameRepository gameRepository;
   private final QuoteRepository quoteRepository;
   private final RandomGenerator rng;
+  private Map<Integer, Integer> gameCypher;
 
   @Autowired
-  public GameService(GameRepository gameRepository, QuoteRepository quoteRepository, RandomGenerator rng) {
+  public GameService(GameRepository gameRepository, QuoteRepository quoteRepository,
+      RandomGenerator rng) {
     this.gameRepository = gameRepository;
     this.quoteRepository = quoteRepository;
     this.rng = rng;
@@ -34,12 +41,24 @@ public class GameService implements AbstractGameService{
 //    if(!currentGames.isEmpty()) {
 //      gameToPlay = currentGames.getFirst();
 //    } else {
-      int quotesLength = quoteRepository.findAll().size();
-      gameToPlay = game;
-      gameToPlay.setUser(user);
-      gameToPlay.setQuote(quoteRepository.findQuoteById(rng.nextLong(quotesLength)));
+    int quotesLength = quoteRepository.findAll().size();
+    gameToPlay = game;
+    gameToPlay.setUser(user);
+    gameToPlay.setQuote(quoteRepository.findQuoteById(rng.nextLong(quotesLength)));
+    String textToEncrypt = gameToPlay.getQuote().getQuoteText().toUpperCase();
+    gameCypher = EncodeQuote(textToEncrypt);
+
 //    }
     return gameRepository.save(gameToPlay);
+  }
+
+  private Map<Integer, Integer> EncodeQuote(String textToEncrypt) {
+    return textToEncrypt
+        .codePoints()
+        .filter(Character::isAlphabetic)
+        .boxed()
+        .collect(Collectors.toMap(Function.identity(), (codepoint) ->
+            Character.codePointAt(ALPHABET, rng.nextInt(LENGTH))));
   }
 
   @Override

@@ -55,6 +55,8 @@ public class Game {
   @JoinColumn(name = "quote_id")
   private Quote quote;
 
+  private String encodedQuote;
+
   private boolean solved;
 
   public User getUser() {
@@ -66,10 +68,10 @@ public class Game {
   }
 
   // TODO: 12/9/2024 one to many
-//  private HashMap<String, String> gameCypherMap = new HashMap<>();
+//  private Map<String, String> gameCypherMap = new HashMap<>();
 
   // TODO: 12/9/2024 one to many
-//  private HashMap<String, String> userCypherMap = new HashMap<>();
+//  private Map<String, String> userCypherMap = new HashMap<>();
 
   public boolean isSolved() {
     return false;
@@ -95,6 +97,14 @@ public class Game {
 
   public void setQuote( Quote quote) {
     this.quote = quote;
+  }
+
+  public String getEncodedQuote() {
+    return encodedQuote;
+  }
+
+  public void setEncodedQuote(String encodedQuote) {
+    this.encodedQuote = encodedQuote;
   }
 
   @PrePersist

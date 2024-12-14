@@ -1,6 +1,5 @@
 package edu.cnm.deepdive.cypherText.model.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Column;
@@ -19,17 +18,17 @@ public class Quote {
   private Long id;
 
   @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-  private String quote;
+  private String quoteText;
 
   public Long getId() {
     return id;
   }
 
-  public String getQuote() {
-    return quote;
+  public String getQuoteText() {
+    return quoteText;
   }
 
-  public void setQuote(String quote) {
-    this.quote = quote;
+  public void setQuoteText(String quote) {
+    this.quoteText = quote;
   }
 }
