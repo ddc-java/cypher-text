@@ -1,6 +1,7 @@
 package edu.cnm.deepdive.cypherText.controller;
 
 import edu.cnm.deepdive.cypherText.model.entity.Game;
+import edu.cnm.deepdive.cypherText.model.entity.Move;
 import edu.cnm.deepdive.cypherText.service.AbstractGameService;
 import edu.cnm.deepdive.cypherText.service.AbstractUserService;
 import java.net.URI;
@@ -45,4 +46,15 @@ public class GameController {
   public Game get(@PathVariable UUID gameKey) {
     return gameService.getGame(gameKey, userService.getCurrentUser());
   }
+
+  @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<Game> post(@PathVariable UUID gameKey, @RequestBody Move move) {
+    Game createdGame = gameService.submitMove(gameKey, move, userService.getCurrentUser());
+    URI location = WebMvcLinkBuilder.linkTo(
+        WebMvcLinkBuilder.methodOn(getClass())
+            .get(createdGame.getKey())).toUri();
+    return ResponseEntity.created(location).body(createdGame);
+  }
+
+
 }

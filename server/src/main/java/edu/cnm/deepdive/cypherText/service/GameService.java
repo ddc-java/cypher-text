@@ -4,6 +4,7 @@ import edu.cnm.deepdive.cypherText.model.dao.GameRepository;
 import edu.cnm.deepdive.cypherText.model.dao.QuoteRepository;
 import edu.cnm.deepdive.cypherText.model.dao.UserRepository;
 import edu.cnm.deepdive.cypherText.model.entity.Game;
+import edu.cnm.deepdive.cypherText.model.entity.Move;
 import edu.cnm.deepdive.cypherText.model.entity.User;
 import java.util.HashMap;
 import java.util.List;
@@ -39,49 +40,49 @@ public class GameService implements AbstractGameService {
   public Game startOrGetGame(Game game, User user) {
     List<Game> currentGames = gameRepository.findCurrentGames(user);
     Game gameToPlay;
-//    if(!currentGames.isEmpty()) {
-//      gameToPlay = currentGames.getFirst();
-//    } else {
-    int quotesLength = quoteRepository.findAll().size();
-    gameToPlay = game;
-    gameToPlay.setUser(user);
-    gameToPlay.setQuote(quoteRepository.findQuoteById(rng.nextLong(quotesLength)));
-//    gameRepository.save(gameToPlay);
-    String textToEncrypt = gameToPlay.getQuote().getQuoteText().toUpperCase();
-//    gameCypher = EncodeQuote(textToEncrypt);
-//    String encodedQuote = textToEncrypt
-//        .codePoints()
-//        .map((codepoint)->{
-//          if(Character.isAlphabetic(codepoint)){
-//            codepoint = gameCypher.get(codepoint);
-//          }
-//          return codepoint;
-//        })
-//        .toString();
-
-    gameToPlay.setEncodedQuote(EncodeQuote(textToEncrypt));
-
-//    }
+    if (!currentGames.isEmpty()) {
+      gameToPlay = currentGames.getFirst();
+    } else {
+      int quotesLength = quoteRepository.findAll().size();
+      gameToPlay = game;
+      gameToPlay.setUser(user);
+      gameToPlay.setQuote(quoteRepository.findQuoteById(rng.nextLong(quotesLength)));
+      String textToEncrypt = gameToPlay.getQuote().getQuoteText().toUpperCase();
+      gameToPlay.setEncodedQuote(EncodeQuote(textToEncrypt));
+    }
     return gameRepository.save(gameToPlay);
+  }
+
+  @Override
+  public Game getGame(UUID gameKey, User user) {
+    return gameRepository
+        .findGameByKeyAndUser(gameKey, user)
+        .orElseThrow();
+  }
+
+  @Override
+  public Game submitMove(UUID gameKey, Move move, User user) {
+    Move currentMove = new Move();
+    return null;
   }
 
   private String EncodeQuote(String textToEncrypt) {
     Map<Integer, Integer> encodeMap = new HashMap<>();
-    for(int i = 0; i < textToEncrypt.length(); i++) {
+    for (int i = 0; i < textToEncrypt.length(); i++) {
       int cp = Character.codePointAt(textToEncrypt, i);
       int ecp;
-      if(!encodeMap.containsKey(cp)) {
+      if (!encodeMap.containsKey(cp)) {
         do {
           ecp = Character.codePointAt(ALPHABET, rng.nextInt(LENGTH));
-        }while (encodeMap.containsKey(ecp));
+        } while (encodeMap.containsKey(ecp));
         encodeMap.put(cp, ecp);
       }
     }
 
     StringBuilder builder = new StringBuilder();
-    for(int i = 0; i < textToEncrypt.length(); i++) {
+    for (int i = 0; i < textToEncrypt.length(); i++) {
       int cp = Character.codePointAt(textToEncrypt, i);
-      if (Character.isAlphabetic(cp)){
+      if (Character.isAlphabetic(cp)) {
         cp = encodeMap.get(cp);
       }
       builder.append(Character.toChars(cp));
@@ -99,12 +100,15 @@ public class GameService implements AbstractGameService {
 //          return codepoint;
 //        }));
 //    return encodeMap;
-  }
-
-  @Override
-  public Game getGame(UUID gameKey, User user) {
-    return gameRepository
-        .findGameByKeyAndUser(gameKey, user)
-        .orElseThrow();
+//    gameCypher = EncodeQuote(textToEncrypt);
+//    String encodedQuote = textToEncrypt
+//        .codePoints()
+//        .map((codepoint)->{
+//          if(Character.isAlphabetic(codepoint)){
+//            codepoint = gameCypher.get(codepoint);
+//          }
+//          return codepoint;
+//        })
+//        .toString();
   }
 }
