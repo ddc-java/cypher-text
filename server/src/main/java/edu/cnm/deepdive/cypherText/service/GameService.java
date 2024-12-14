@@ -48,16 +48,26 @@ public class GameService implements AbstractGameService {
 //    gameRepository.save(gameToPlay);
     String textToEncrypt = gameToPlay.getQuote().getQuoteText().toUpperCase();
     gameCypher = EncodeQuote(textToEncrypt);
-    gameToPlay.setEncodedQuote(textToEncrypt
-        .codePoints()
-        .map((codepoint)->{
-          if(Character.isAlphabetic(codepoint)){
-            codepoint = gameCypher.get(codepoint);
-          }
-          return codepoint;
-        })
-        .toString()
-    );
+    StringBuilder builder = new StringBuilder();
+    for(int i = 0; i < textToEncrypt.length(); i++) {
+      int cp = Character.codePointAt(textToEncrypt, i);
+      if (Character.isAlphabetic(cp)){
+        cp = gameCypher.get(cp);
+      }
+      builder.append(Character.toChars(cp));
+    }
+    String encodedQuote = builder.toString();
+//    String encodedQuote = textToEncrypt
+//        .codePoints()
+//        .map((codepoint)->{
+//          if(Character.isAlphabetic(codepoint)){
+//            codepoint = gameCypher.get(codepoint);
+//          }
+//          return codepoint;
+//        })
+//        .toString();
+
+    gameToPlay.setEncodedQuote(builder.toString());
 
 //    }
     return gameRepository.save(gameToPlay);
