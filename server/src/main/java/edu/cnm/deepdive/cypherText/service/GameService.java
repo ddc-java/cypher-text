@@ -5,6 +5,7 @@ import edu.cnm.deepdive.cypherText.model.dao.QuoteRepository;
 import edu.cnm.deepdive.cypherText.model.dao.UserRepository;
 import edu.cnm.deepdive.cypherText.model.entity.Game;
 import edu.cnm.deepdive.cypherText.model.entity.User;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -47,16 +48,7 @@ public class GameService implements AbstractGameService {
     gameToPlay.setQuote(quoteRepository.findQuoteById(rng.nextLong(quotesLength)));
 //    gameRepository.save(gameToPlay);
     String textToEncrypt = gameToPlay.getQuote().getQuoteText().toUpperCase();
-    gameCypher = EncodeQuote(textToEncrypt);
-    StringBuilder builder = new StringBuilder();
-    for(int i = 0; i < textToEncrypt.length(); i++) {
-      int cp = Character.codePointAt(textToEncrypt, i);
-      if (Character.isAlphabetic(cp)){
-        cp = gameCypher.get(cp);
-      }
-      builder.append(Character.toChars(cp));
-    }
-    String encodedQuote = builder.toString();
+//    gameCypher = EncodeQuote(textToEncrypt);
 //    String encodedQuote = textToEncrypt
 //        .codePoints()
 //        .map((codepoint)->{
@@ -67,25 +59,46 @@ public class GameService implements AbstractGameService {
 //        })
 //        .toString();
 
-    gameToPlay.setEncodedQuote(builder.toString());
+    gameToPlay.setEncodedQuote(EncodeQuote(textToEncrypt));
 
 //    }
     return gameRepository.save(gameToPlay);
   }
 
-  private Map<Integer, Integer> EncodeQuote(String textToEncrypt) {
-    Map<Integer, Integer> encodeQuote = textToEncrypt
-        .codePoints()
-        .filter(Character::isAlphabetic)
-        .distinct()
-        .boxed()
-        .collect(Collectors.toMap(Function.identity(), (codepoint) -> {
-          do {
-            int c = Character.codePointAt(ALPHABET, rng.nextInt(LENGTH));
-          } while (encodeQuote.containsValue(c));
-          return codepoint;
-        }));
-    return encodeQuote;
+  private String EncodeQuote(String textToEncrypt) {
+    Map<Integer, Integer> encodeMap = new HashMap<>();
+    for(int i = 0; i < textToEncrypt.length(); i++) {
+      int cp = Character.codePointAt(textToEncrypt, i);
+      int ecp;
+      if(!encodeMap.containsKey(cp)) {
+        do {
+          ecp = Character.codePointAt(ALPHABET, rng.nextInt(LENGTH));
+        }while (encodeMap.containsKey(ecp));
+        encodeMap.put(cp, ecp);
+      }
+    }
+
+    StringBuilder builder = new StringBuilder();
+    for(int i = 0; i < textToEncrypt.length(); i++) {
+      int cp = Character.codePointAt(textToEncrypt, i);
+      if (Character.isAlphabetic(cp)){
+        cp = encodeMap.get(cp);
+      }
+      builder.append(Character.toChars(cp));
+    }
+    return builder.toString();
+
+//        .codePoints()
+//        .filter(Character::isAlphabetic)
+//        .distinct()
+//        .boxed()
+//        .collect(Collectors.toMap(Function.identity(), (codepoint) -> {
+//          do {
+//            int c = Character.codePointAt(ALPHABET, rng.nextInt(LENGTH));
+//          } while (encodeMap.containsValue(c));
+//          return codepoint;
+//        }));
+//    return encodeMap;
   }
 
   @Override
