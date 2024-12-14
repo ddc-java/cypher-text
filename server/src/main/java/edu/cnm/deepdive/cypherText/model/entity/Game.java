@@ -47,7 +47,7 @@ public class Game {
 
 
   @ManyToOne(optional = false, fetch = FetchType.EAGER)
-//  @JsonIgnore
+  @JsonIgnore
   @JoinColumn(name = "quote_id")
   private Quote quote;
 
