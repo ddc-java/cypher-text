@@ -74,14 +74,18 @@ public class GameService implements AbstractGameService {
   }
 
   private Map<Integer, Integer> EncodeQuote(String textToEncrypt) {
-    Map<Integer, Integer> EncodeQuote = textToEncrypt
+    Map<Integer, Integer> encodeQuote = textToEncrypt
         .codePoints()
         .filter(Character::isAlphabetic)
         .distinct()
         .boxed()
-        .collect(Collectors.toMap(Function.identity(), (codepoint) ->
-            Character.codePointAt(ALPHABET, rng.nextInt(LENGTH))));
-    return EncodeQuote;
+        .collect(Collectors.toMap(Function.identity(), (codepoint) -> {
+          do {
+            int c = Character.codePointAt(ALPHABET, rng.nextInt(LENGTH));
+          } while (encodeQuote.containsValue(c));
+          return codepoint;
+        }));
+    return encodeQuote;
   }
 
   @Override
