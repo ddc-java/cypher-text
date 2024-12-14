@@ -45,20 +45,33 @@ public class GameService implements AbstractGameService {
     gameToPlay = game;
     gameToPlay.setUser(user);
     gameToPlay.setQuote(quoteRepository.findQuoteById(rng.nextLong(quotesLength)));
+//    gameRepository.save(gameToPlay);
     String textToEncrypt = gameToPlay.getQuote().getQuoteText().toUpperCase();
     gameCypher = EncodeQuote(textToEncrypt);
+    gameToPlay.setEncodedQuote(textToEncrypt
+        .codePoints()
+        .map((codepoint)->{
+          if(Character.isAlphabetic(codepoint)){
+            codepoint = gameCypher.get(codepoint);
+          }
+          return codepoint;
+        })
+        .toString()
+    );
 
 //    }
     return gameRepository.save(gameToPlay);
   }
 
   private Map<Integer, Integer> EncodeQuote(String textToEncrypt) {
-    return textToEncrypt
+    Map<Integer, Integer> EncodeQuote = textToEncrypt
         .codePoints()
         .filter(Character::isAlphabetic)
+        .distinct()
         .boxed()
         .collect(Collectors.toMap(Function.identity(), (codepoint) ->
             Character.codePointAt(ALPHABET, rng.nextInt(LENGTH))));
+    return EncodeQuote;
   }
 
   @Override

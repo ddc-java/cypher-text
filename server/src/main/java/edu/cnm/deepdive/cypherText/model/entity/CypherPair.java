@@ -9,7 +9,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import org.springframework.lang.NonNull;
 
-@Entity
+//@Entity
 public class CypherPair {
 
   @NonNull

@@ -28,7 +28,8 @@ public class PreloadService implements CommandLineRunner {
     ClassPathResource resource = new ClassPathResource(preloadFile);
     try(InputStream input = resource.getInputStream()) {
       ObjectMapper mapper = new ObjectMapper();
-      List<Quote> quotes = mapper.readValue(input, new TypeReference<List<Quote>>() {});
+      List<Quote> quotes = mapper.readValue(input, new TypeReference<>() {
+      });
       qRepo.saveAll(quotes);
     }
   }
