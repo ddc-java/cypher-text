@@ -1,7 +1,7 @@
 package edu.cnm.deepdive.cypherText.service;
 
 import edu.cnm.deepdive.cypherText.model.entity.Game;
-import edu.cnm.deepdive.cypherText.model.entity.Move;
+import edu.cnm.deepdive.cypherText.model.entity.Guess;
 import edu.cnm.deepdive.cypherText.model.entity.User;
 import java.util.UUID;
 
@@ -11,6 +11,6 @@ public interface AbstractGameService {
 
   Game getGame(UUID gameKey, User user);
 
-  Game submitMove(UUID gameKey, Move move, User user);
+  Game submitMove(UUID gameKey, Guess move, User user);
 
 }

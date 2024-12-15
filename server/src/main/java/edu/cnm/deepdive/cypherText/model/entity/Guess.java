@@ -1,6 +1,8 @@
 package edu.cnm.deepdive.cypherText.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -15,7 +17,7 @@ import org.antlr.v4.runtime.misc.NotNull;
 import org.hibernate.annotations.CreationTimestamp;
 
 @Entity
-public class Move {
+public class Guess {
 
   @Id
   @GeneratedValue
@@ -29,10 +31,14 @@ public class Move {
 
   @NotNull
   @Column(nullable = false, updatable = false)
-  @CreationTimestamp(TemporalType.TIMESTAMP)
+  @CreationTimestamp
+  @Temporal(TemporalType.TIMESTAMP)
   @JsonIgnore
   private Instant time;
 
+  @Column(nullable = false, updatable = false)
+  @JsonProperty(access = JsonProperty.Access.READ_WRITE)
+  @JsonUnwrapped
   private CypherPair cypherPair;
 
 }

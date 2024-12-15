@@ -1,7 +1,6 @@
 package edu.cnm.deepdive.cypherText.controller;
 
 import edu.cnm.deepdive.cypherText.model.entity.Game;
-import edu.cnm.deepdive.cypherText.model.entity.Move;
 import edu.cnm.deepdive.cypherText.service.AbstractGameService;
 import edu.cnm.deepdive.cypherText.service.AbstractUserService;
 import java.net.URI;
@@ -14,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -47,14 +45,14 @@ public class GameController {
     return gameService.getGame(gameKey, userService.getCurrentUser());
   }
 
-  @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<Game> post(@PathVariable UUID gameKey, @RequestBody Move move) {
-    Game createdGame = gameService.submitMove(gameKey, move, userService.getCurrentUser());
-    URI location = WebMvcLinkBuilder.linkTo(
-        WebMvcLinkBuilder.methodOn(getClass())
-            .get(createdGame.getKey())).toUri();
-    return ResponseEntity.created(location).body(createdGame);
-  }
+//  @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+//  public ResponseEntity<Game> post(@PathVariable UUID gameKey, @RequestBody Guess guess) {
+//    Game createdGame = gameService.submitMove(gameKey, move, userService.getCurrentUser());
+//    URI location = WebMvcLinkBuilder.linkTo(
+//        WebMvcLinkBuilder.methodOn(getClass())
+//            .get(createdGame.getKey())).toUri();
+//    return ResponseEntity.created(location).body(createdGame);
+//  }
 
 
 }

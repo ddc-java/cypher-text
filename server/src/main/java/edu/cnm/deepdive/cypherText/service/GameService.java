@@ -2,17 +2,14 @@ package edu.cnm.deepdive.cypherText.service;
 
 import edu.cnm.deepdive.cypherText.model.dao.GameRepository;
 import edu.cnm.deepdive.cypherText.model.dao.QuoteRepository;
-import edu.cnm.deepdive.cypherText.model.dao.UserRepository;
 import edu.cnm.deepdive.cypherText.model.entity.Game;
-import edu.cnm.deepdive.cypherText.model.entity.Move;
+import edu.cnm.deepdive.cypherText.model.entity.Guess;
 import edu.cnm.deepdive.cypherText.model.entity.User;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.function.Function;
 import java.util.random.RandomGenerator;
-import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
@@ -61,8 +58,8 @@ public class GameService implements AbstractGameService {
   }
 
   @Override
-  public Game submitMove(UUID gameKey, Move move, User user) {
-    Move currentMove = new Move();
+  public Game submitMove(UUID gameKey, Guess guess, User user) {
+//    Move currentMove = new Move();
     return null;
   }
 
