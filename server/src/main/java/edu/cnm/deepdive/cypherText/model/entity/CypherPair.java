@@ -16,10 +16,10 @@ import org.springframework.lang.NonNull;
 public class CypherPair {
 
   @NonNull
-  private Character from;
+  private int from;
 
   @NonNull
-  private Character to;
+  private int to;
 
   public CypherPair() {}
 
@@ -29,20 +29,20 @@ public class CypherPair {
   }
 
   @NonNull
-  public Character getFrom() {
+  public int getFrom() {
     return from;
   }
 
-  public void setFrom(@NonNull Character from) {
+  public void setFrom(@NonNull int from) {
     this.from = from;
   }
 
   @NonNull
-  public Character getTo() {
+  public int getTo() {
     return to;
   }
 
-  public void setTo(@NonNull Character to) {
+  public void setTo(@NonNull int to) {
     this.to = to;
   }
 

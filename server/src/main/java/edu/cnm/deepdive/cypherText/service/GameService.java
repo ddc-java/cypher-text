@@ -1,8 +1,11 @@
 package edu.cnm.deepdive.cypherText.service;
 
+import edu.cnm.deepdive.cypherText.model.dao.GameCypherPairRepository;
 import edu.cnm.deepdive.cypherText.model.dao.GameRepository;
 import edu.cnm.deepdive.cypherText.model.dao.QuoteRepository;
+import edu.cnm.deepdive.cypherText.model.entity.CypherPair;
 import edu.cnm.deepdive.cypherText.model.entity.Game;
+import edu.cnm.deepdive.cypherText.model.entity.GameCypherPair;
 import edu.cnm.deepdive.cypherText.model.entity.Guess;
 import edu.cnm.deepdive.cypherText.model.entity.User;
 import java.util.HashMap;
@@ -22,14 +25,17 @@ public class GameService implements AbstractGameService {
   private static final int LENGTH = ALPHABET.length();
   private final GameRepository gameRepository;
   private final QuoteRepository quoteRepository;
+  private final GameCypherPairRepository gameCypherPairRepository;
   private final RandomGenerator rng;
   private Map<Integer, Integer> gameCypher;
 
   @Autowired
   public GameService(GameRepository gameRepository, QuoteRepository quoteRepository,
+      GameCypherPairRepository gameCypherPairRepository,
       RandomGenerator rng) {
     this.gameRepository = gameRepository;
     this.quoteRepository = quoteRepository;
+    this.gameCypherPairRepository = gameCypherPairRepository;
     this.rng = rng;
   }
 
@@ -44,8 +50,10 @@ public class GameService implements AbstractGameService {
       gameToPlay = game;
       gameToPlay.setUser(user);
       gameToPlay.setQuote(quoteRepository.findQuoteById(rng.nextLong(quotesLength)));
+      gameRepository.save(gameToPlay);
       String textToEncrypt = gameToPlay.getQuote().getQuoteText().toUpperCase();
-      gameToPlay.setEncodedQuote(EncodeQuote(textToEncrypt));
+      String encodedQuote = EncodeQuote(textToEncrypt, gameToPlay);
+      gameToPlay.setEncodedQuote(encodedQuote);
     }
     return gameRepository.save(gameToPlay);
   }
@@ -63,16 +71,23 @@ public class GameService implements AbstractGameService {
     return null;
   }
 
-  private String EncodeQuote(String textToEncrypt) {
+  private String EncodeQuote(String textToEncrypt, Game game) {
     Map<Integer, Integer> encodeMap = new HashMap<>();
     for (int i = 0; i < textToEncrypt.length(); i++) {
       int cp = Character.codePointAt(textToEncrypt, i);
       int ecp;
       if (!encodeMap.containsKey(cp)) {
+        GameCypherPair gcp = new GameCypherPair();
+        CypherPair cypherPair = new CypherPair();
         do {
           ecp = Character.codePointAt(ALPHABET, rng.nextInt(LENGTH));
-        } while (encodeMap.containsKey(ecp));
+        } while (encodeMap.containsKey(ecp) || ecp == cp);
         encodeMap.put(cp, ecp);
+        gcp.setGame(game);
+        cypherPair.setFrom(cp);
+        cypherPair.setTo(ecp);
+        gcp.setCypherPair(cypherPair);
+        gameCypherPairRepository.save(gcp);
       }
     }
 
