@@ -47,7 +47,7 @@ public class GameController {
 
 //  @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 //  public ResponseEntity<Game> post(@PathVariable UUID gameKey, @RequestBody Guess guess) {
-//    Game createdGame = gameService.submitMove(gameKey, move, userService.getCurrentUser());
+//    Game createdGame = gameService.submitGuess(gameKey, move, userService.getCurrentUser());
 //    URI location = WebMvcLinkBuilder.linkTo(
 //        WebMvcLinkBuilder.methodOn(getClass())
 //            .get(createdGame.getKey())).toUri();

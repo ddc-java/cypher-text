@@ -66,8 +66,7 @@ public class GameService implements AbstractGameService {
   }
 
   @Override
-  public Game submitMove(UUID gameKey, Guess guess, User user) {
-//    Move currentMove = new Move();
+  public Game submitGuess(UUID gameKey, Guess guess, User user) {
     return null;
   }
 

@@ -11,6 +11,6 @@ public interface AbstractGameService {
 
   Game getGame(UUID gameKey, User user);
 
-  Game submitMove(UUID gameKey, Guess move, User user);
+  Game submitGuess(UUID gameKey, Guess move, User user);
 
 }
