@@ -16,6 +16,7 @@ import jakarta.persistence.PrePersist;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import java.time.Instant;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 import org.hibernate.annotations.CreationTimestamp;
@@ -58,7 +59,7 @@ public class Game {
 
   @OneToMany(mappedBy = "game", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
   @JsonProperty(access = Access.READ_WRITE)
-  private List<GameCypherPair> gameCypher;
+  private final List<GameCypherPair> gameCypher = new LinkedList<>();
 
   private boolean solved;
 
@@ -101,11 +102,6 @@ public class Game {
 
   public List<GameCypherPair> getGameCypher() {
     return gameCypher;
-  }
-
-  public void setGameCypher(
-      List<GameCypherPair> gameCypher) {
-    this.gameCypher = gameCypher;
   }
 
   public boolean isSolved() {

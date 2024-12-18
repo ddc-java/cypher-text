@@ -43,18 +43,20 @@ public class GameService implements AbstractGameService {
   public Game startOrGetGame(Game game, User user) {
     List<Game> currentGames = gameRepository.findCurrentGames(user);
     Game gameToPlay;
-    if (!currentGames.isEmpty()) {
-      gameToPlay = currentGames.getFirst();
-    } else {
-      int quotesLength = quoteRepository.findAll().size();
-      gameToPlay = game;
-      gameToPlay.setUser(user);
-      gameToPlay.setQuote(quoteRepository.findQuoteById(rng.nextLong(quotesLength)));
-      gameRepository.save(gameToPlay);
-      String textToEncrypt = gameToPlay.getQuote().getQuoteText().toUpperCase();
-      String encodedQuote = EncodeQuote(textToEncrypt, gameToPlay);
-      gameToPlay.setEncodedQuote(encodedQuote);
-    }
+//    if (!currentGames.isEmpty()) {
+//      gameToPlay = currentGames.getFirst();
+//    } else {
+    int quotesLength = quoteRepository.findAll().size();
+    gameToPlay = game;
+    gameToPlay.setUser(user);
+    gameToPlay.setQuote(quoteRepository.findQuoteById(rng.nextLong(quotesLength)));
+    String textToEncrypt = gameToPlay.getQuote().getQuoteText().toUpperCase();
+    gameCypher = createCypher(textToEncrypt);
+    String encodedQuote = EncodeQuote(textToEncrypt, gameCypher);
+    gameToPlay.setEncodedQuote(encodedQuote);
+    gameRepository.save(gameToPlay);
+    persistCypher(gameCypher, gameToPlay);
+//    }
     return gameRepository.save(gameToPlay);
   }
 
@@ -70,56 +72,58 @@ public class GameService implements AbstractGameService {
     return null;
   }
 
-  private String EncodeQuote(String textToEncrypt, Game game) {
-    Map<Integer, Integer> encodeMap = new HashMap<>();
+  private Map<Integer, Integer> createCypher(String textToEncrypt) {
+    Map<Integer, Integer> cypher = new HashMap<>();
+    int srcIndex;
+    int srcValue;
+    int destValue;
+    int tempValue;
+    for(int destIndex = ALPHABET.length() - 1; destIndex >= 0; destIndex--) {
+      srcIndex = rng.nextInt(destIndex);
+      srcValue = ALPHABET.codePointAt(srcIndex);
+      destValue = ALPHABET.codePointAt(destIndex);
+      tempValue = srcValue;
+      srcValue = destValue;
+      destValue = tempValue;
+
+    }
+
     for (int i = 0; i < textToEncrypt.length(); i++) {
       int cp = Character.codePointAt(textToEncrypt, i);
       int ecp;
-      if (!encodeMap.containsKey(cp)) {
-        GameCypherPair gcp = new GameCypherPair();
-        CypherPair cypherPair = new CypherPair();
+      if (!cypher.containsKey(cp)) {
         do {
           ecp = Character.codePointAt(ALPHABET, rng.nextInt(LENGTH));
-        } while (encodeMap.containsKey(ecp) || ecp == cp);
-        encodeMap.put(cp, ecp);
-        gcp.setGame(game);
-        cypherPair.setFrom(cp);
-        cypherPair.setTo(ecp);
-        gcp.setCypherPair(cypherPair);
-        gameCypherPairRepository.save(gcp);
+        } while (cypher.containsKey(ecp) || ecp == cp);
+        cypher.put(cp, ecp);
+
       }
     }
+    return cypher;
+  }
+
+  private String EncodeQuote(String textToEncrypt, Map<Integer, Integer> gameCypher) {
 
     StringBuilder builder = new StringBuilder();
     for (int i = 0; i < textToEncrypt.length(); i++) {
       int cp = Character.codePointAt(textToEncrypt, i);
       if (Character.isAlphabetic(cp)) {
-        cp = encodeMap.get(cp);
+        cp = gameCypher.get(cp);
       }
       builder.append(Character.toChars(cp));
     }
     return builder.toString();
+  }
 
-//        .codePoints()
-//        .filter(Character::isAlphabetic)
-//        .distinct()
-//        .boxed()
-//        .collect(Collectors.toMap(Function.identity(), (codepoint) -> {
-//          do {
-//            int c = Character.codePointAt(ALPHABET, rng.nextInt(LENGTH));
-//          } while (encodeMap.containsValue(c));
-//          return codepoint;
-//        }));
-//    return encodeMap;
-//    gameCypher = EncodeQuote(textToEncrypt);
-//    String encodedQuote = textToEncrypt
-//        .codePoints()
-//        .map((codepoint)->{
-//          if(Character.isAlphabetic(codepoint)){
-//            codepoint = gameCypher.get(codepoint);
-//          }
-//          return codepoint;
-//        })
-//        .toString();
+  private void persistCypher(Map<Integer, Integer> cypher, Game game) {
+    GameCypherPair gcp = new GameCypherPair();
+    CypherPair cypherPair = new CypherPair();
+    for (Map.Entry<Integer, Integer> entry : cypher.entrySet()) {
+      gcp.setGame(game);
+      cypherPair.setFrom(entry.getKey());
+      cypherPair.setTo(entry.getValue());
+      gcp.setCypherPair(cypherPair);
+      gameCypherPairRepository.save(gcp);
+    }
   }
 }

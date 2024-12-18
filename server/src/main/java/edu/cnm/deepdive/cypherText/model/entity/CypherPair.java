@@ -1,14 +1,7 @@
 package edu.cnm.deepdive.cypherText.model.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import java.util.Objects;
 import org.springframework.lang.NonNull;
 
@@ -16,33 +9,35 @@ import org.springframework.lang.NonNull;
 public class CypherPair {
 
   @NonNull
-  private int from;
+  @Column(name = "from_char")
+  private Integer from;
 
   @NonNull
-  private int to;
+  @Column(name = "to_char")
+  private Integer to;
 
   public CypherPair() {}
 
-  public CypherPair(Character from, Character to) {
+  public CypherPair(Integer from, Integer to) {
     this.from = from;
     this.to = to;
   }
 
   @NonNull
-  public int getFrom() {
+  public Integer getFrom() {
     return from;
   }
 
-  public void setFrom(@NonNull int from) {
+  public void setFrom(@NonNull Integer from) {
     this.from = from;
   }
 
   @NonNull
-  public int getTo() {
+  public Integer getTo() {
     return to;
   }
 
-  public void setTo(@NonNull int to) {
+  public void setTo(@NonNull Integer to) {
     this.to = to;
   }
 

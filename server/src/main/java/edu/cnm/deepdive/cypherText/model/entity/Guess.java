@@ -13,23 +13,24 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import java.time.Instant;
-import org.antlr.v4.runtime.misc.NotNull;
 import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.lang.NonNull;
 
 @Entity
 public class Guess {
 
   @Id
   @GeneratedValue
+  @Column(name = "guess_id")
   private Long id;
 
-  @NotNull
+//  @NonNull
   @ManyToOne(optional = false, fetch = FetchType.EAGER)
   @JoinColumn(name = "game_id", nullable = false, updatable = false)
   @JsonIgnore
   private Game game;
 
-  @NotNull
+//  @NonNull
   @Column(nullable = false, updatable = false)
   @CreationTimestamp
   @Temporal(TemporalType.TIMESTAMP)
@@ -41,4 +42,33 @@ public class Guess {
   @JsonUnwrapped
   private CypherPair cypherPair;
 
+  public Long getId() {
+    return id;
+  }
+
+  public void setId(Long id) {
+    this.id = id;
+  }
+
+//  @NonNull
+  public Game getGame() {
+    return game;
+  }
+
+  public void setGame( Game game) {
+    this.game = game;
+  }
+
+//  @NonNull
+  public Instant getTime() {
+    return time;
+  }
+
+  public CypherPair getCypherPair() {
+    return cypherPair;
+  }
+
+  public void setCypherPair(CypherPair cypherPair) {
+    this.cypherPair = cypherPair;
+  }
 }
