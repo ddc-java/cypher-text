@@ -104,6 +104,10 @@ public class Game {
     return gameCypher;
   }
 
+  public void appendGameCypher(GameCypherPair gameCypherPair) {
+    this.gameCypher.add(gameCypherPair);
+  }
+
   public boolean isSolved() {
     return false;
     // TODO: 12/9/2024 return the boolean value of the encrypted quote decrypted by the user cypher compared to the original quote.

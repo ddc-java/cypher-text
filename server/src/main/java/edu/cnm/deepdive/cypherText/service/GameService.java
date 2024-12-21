@@ -8,11 +8,13 @@ import edu.cnm.deepdive.cypherText.model.entity.Game;
 import edu.cnm.deepdive.cypherText.model.entity.GameCypherPair;
 import edu.cnm.deepdive.cypherText.model.entity.Guess;
 import edu.cnm.deepdive.cypherText.model.entity.User;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.random.RandomGenerator;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
@@ -22,6 +24,7 @@ import org.springframework.stereotype.Service;
 public class GameService implements AbstractGameService {
 
   private static final String ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  private static final int[] ALPHABET_CP_ARRAY = ALPHABET.codePoints().toArray();
   private static final int LENGTH = ALPHABET.length();
   private final GameRepository gameRepository;
   private final QuoteRepository quoteRepository;
@@ -51,11 +54,10 @@ public class GameService implements AbstractGameService {
     gameToPlay.setUser(user);
     gameToPlay.setQuote(quoteRepository.findQuoteById(rng.nextLong(quotesLength)));
     String textToEncrypt = gameToPlay.getQuote().getQuoteText().toUpperCase();
-    gameCypher = createCypher(textToEncrypt);
+    gameCypher = createCypher();
     String encodedQuote = EncodeQuote(textToEncrypt, gameCypher);
     gameToPlay.setEncodedQuote(encodedQuote);
-    gameRepository.save(gameToPlay);
-    persistCypher(gameCypher, gameToPlay);
+    persistCypher(gameCypher, gameToPlay, textToEncrypt);
 //    }
     return gameRepository.save(gameToPlay);
   }
@@ -72,58 +74,63 @@ public class GameService implements AbstractGameService {
     return null;
   }
 
-  private Map<Integer, Integer> createCypher(String textToEncrypt) {
+  private Map<Integer, Integer> createCypher() {
     Map<Integer, Integer> cypher = new HashMap<>();
+    int[] gameCypher = ALPHABET_CP_ARRAY.clone();
     int srcIndex;
-    int srcValue;
-    int destValue;
     int tempValue;
-    for(int destIndex = ALPHABET.length() - 1; destIndex >= 0; destIndex--) {
+    for (int destIndex = ALPHABET.length() - 1; destIndex >= 0; destIndex--) {
       srcIndex = rng.nextInt(destIndex);
-      srcValue = ALPHABET.codePointAt(srcIndex);
-      destValue = ALPHABET.codePointAt(destIndex);
-      tempValue = srcValue;
-      srcValue = destValue;
-      destValue = tempValue;
-
-    }
-
-    for (int i = 0; i < textToEncrypt.length(); i++) {
-      int cp = Character.codePointAt(textToEncrypt, i);
-      int ecp;
-      if (!cypher.containsKey(cp)) {
-        do {
-          ecp = Character.codePointAt(ALPHABET, rng.nextInt(LENGTH));
-        } while (cypher.containsKey(ecp) || ecp == cp);
-        cypher.put(cp, ecp);
-
-      }
+      tempValue = gameCypher[srcIndex];
+      gameCypher[srcIndex] = gameCypher[destIndex];
+      gameCypher[destIndex] = tempValue;
+      cypher.put(ALPHABET_CP_ARRAY[destIndex], gameCypher[destIndex]);
     }
     return cypher;
   }
 
-  private String EncodeQuote(String textToEncrypt, Map<Integer, Integer> gameCypher) {
 
-    StringBuilder builder = new StringBuilder();
-    for (int i = 0; i < textToEncrypt.length(); i++) {
-      int cp = Character.codePointAt(textToEncrypt, i);
-      if (Character.isAlphabetic(cp)) {
-        cp = gameCypher.get(cp);
-      }
-      builder.append(Character.toChars(cp));
-    }
-    return builder.toString();
-  }
 
-  private void persistCypher(Map<Integer, Integer> cypher, Game game) {
+private String EncodeQuote(String textToEncrypt, Map<Integer, Integer> gameCypher) {
+
+    return textToEncrypt.codePoints()
+        .map(gameCypher::get)
+        .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+        .toString();
+//  StringBuilder builder = new StringBuilder();
+//  for (int i = 0; i < textToEncrypt.length(); i++) {
+//    int cp = Character.codePointAt(textToEncrypt, i);
+//    if (Character.isAlphabetic(cp)) {
+//      cp = gameCypher.get(cp);
+//    }
+//    builder.append(Character.toChars(cp));
+//  }
+//  return builder.toString();
+}
+
+private void persistCypher(Map<Integer, Integer> cypher, Game game, String textToEncrypt) {
+//  textToEncrypt
+//      .codePoints()
+//      .distinct()
+//      .map((cp) ->{
+//        GameCypherPair gcp = new GameCypherPair();
+//        CypherPair cypherPair = new CypherPair();
+//        gcp.setGame(game);
+//        cypherPair.setFrom(cp);
+//        cypherPair.setTo(cypher.get(cp));
+//        gcp.setCypherPair(cypherPair);
+//        game.appendGameCypher(gcp);
+//
+//      })
+//      .collect(Collectors.toMap())
+  for (Map.Entry<Integer, Integer> entry : cypher.entrySet()) {
     GameCypherPair gcp = new GameCypherPair();
     CypherPair cypherPair = new CypherPair();
-    for (Map.Entry<Integer, Integer> entry : cypher.entrySet()) {
-      gcp.setGame(game);
-      cypherPair.setFrom(entry.getKey());
-      cypherPair.setTo(entry.getValue());
-      gcp.setCypherPair(cypherPair);
-      gameCypherPairRepository.save(gcp);
-    }
+    gcp.setGame(game);
+    cypherPair.setFrom(entry.getKey());
+    cypherPair.setTo(entry.getValue());
+    gcp.setCypherPair(cypherPair);
+    game.appendGameCypher(gcp);
   }
+}
 }
