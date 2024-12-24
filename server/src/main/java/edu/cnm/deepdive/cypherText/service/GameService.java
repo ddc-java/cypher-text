@@ -83,7 +83,9 @@ public class GameService implements AbstractGameService {
     int srcIndex;
     int tempValue;
     for (int destIndex = gameCypher.length - 1; destIndex >= 0; destIndex--) {
-      srcIndex = rng.nextInt(destIndex + 1);
+      do {
+        srcIndex = rng.nextInt(destIndex + 1);
+      } while (gameCypher[srcIndex] == ALPHABET_CP_ARRAY[destIndex]);
       tempValue = gameCypher[srcIndex];
       gameCypher[srcIndex] = gameCypher[destIndex];
       gameCypher[destIndex] = tempValue;
@@ -114,6 +116,7 @@ private String EncodeQuote(String textToEncrypt, Map<Integer, Integer> gameCyphe
 private void persistCypher(Map<Integer, Integer> cypher, Game game, String textToEncrypt) {
   textToEncrypt
       .codePoints()
+      .filter(Character::isAlphabetic)
       .distinct()
       .forEach((cp) ->{
         GameCypherPair gcp = new GameCypherPair();
