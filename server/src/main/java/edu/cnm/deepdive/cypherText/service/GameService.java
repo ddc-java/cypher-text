@@ -112,28 +112,26 @@ private String EncodeQuote(String textToEncrypt, Map<Integer, Integer> gameCyphe
 }
 
 private void persistCypher(Map<Integer, Integer> cypher, Game game, String textToEncrypt) {
-//  textToEncrypt
-//      .codePoints()
-//      .distinct()
-//      .map((cp) ->{
-//        GameCypherPair gcp = new GameCypherPair();
-//        CypherPair cypherPair = new CypherPair();
-//        gcp.setGame(game);
-//        cypherPair.setFrom(cp);
-//        cypherPair.setTo(cypher.get(cp));
-//        gcp.setCypherPair(cypherPair);
-//        game.appendGameCypher(gcp);
-//
-//      })
-//      .collect(Collectors.toMap())
-  for (Map.Entry<Integer, Integer> entry : cypher.entrySet()) {
-    GameCypherPair gcp = new GameCypherPair();
-    CypherPair cypherPair = new CypherPair();
-    gcp.setGame(game);
-    cypherPair.setFrom(entry.getKey());
-    cypherPair.setTo(entry.getValue());
-    gcp.setCypherPair(cypherPair);
-    game.appendGameCypher(gcp);
-  }
+  textToEncrypt
+      .codePoints()
+      .distinct()
+      .forEach((cp) ->{
+        GameCypherPair gcp = new GameCypherPair();
+        CypherPair cypherPair = new CypherPair();
+        gcp.setGame(game);
+        cypherPair.setFrom(cp);
+        cypherPair.setTo(cypher.get(cp));
+        gcp.setCypherPair(cypherPair);
+        game.appendGameCypher(gcp);
+      });
+//  for (Map.Entry<Integer, Integer> entry : cypher.entrySet()) {
+//    GameCypherPair gcp = new GameCypherPair();
+//    CypherPair cypherPair = new CypherPair();
+//    gcp.setGame(game);
+//    cypherPair.setFrom(entry.getKey());
+//    cypherPair.setTo(entry.getValue());
+//    gcp.setCypherPair(cypherPair);
+//    game.appendGameCypher(gcp);
+//  }
 }
 }
