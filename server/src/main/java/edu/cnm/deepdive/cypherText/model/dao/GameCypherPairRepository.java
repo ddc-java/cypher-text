@@ -8,8 +8,8 @@ import org.springframework.data.repository.query.Param;
 
 public interface GameCypherPairRepository extends JpaRepository<GameCypherPair, Long> {
 
-//  List<GameCypherPair> findByGameId(Long game_id);
+  List<GameCypherPair> findByGameId(Long game_id);
 
-//  @Query("SELECT gcp FROM GameCypherPair as gcp WHERE gcp.game.id := game_id")
-//  List<GameCypherPair> findGameCypherPairByGameId(Long game_id);
+  @Query("SELECT gcp FROM GameCypherPair as gcp WHERE gcp.game.id = :game_id AND gcp.cypherPair.from = :from_cp")
+  List<GameCypherPair> findGameCypherPairByGameIdAndFromCp(Long game_id, int from_cp);
 }

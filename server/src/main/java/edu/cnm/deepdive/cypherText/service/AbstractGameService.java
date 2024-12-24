@@ -1,5 +1,6 @@
 package edu.cnm.deepdive.cypherText.service;
 
+import edu.cnm.deepdive.cypherText.model.dto.GuessDto;
 import edu.cnm.deepdive.cypherText.model.entity.Game;
 import edu.cnm.deepdive.cypherText.model.entity.Guess;
 import edu.cnm.deepdive.cypherText.model.entity.User;
@@ -11,6 +12,6 @@ public interface AbstractGameService {
 
   Game getGame(UUID gameKey, User user);
 
-  Game submitGuess(UUID gameKey, Guess move, User user);
+  Game submitGuess(UUID gameKey, GuessDto guessDto, User user);
 
 }

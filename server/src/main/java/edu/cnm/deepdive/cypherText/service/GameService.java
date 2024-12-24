@@ -3,6 +3,7 @@ package edu.cnm.deepdive.cypherText.service;
 import edu.cnm.deepdive.cypherText.model.dao.GameCypherPairRepository;
 import edu.cnm.deepdive.cypherText.model.dao.GameRepository;
 import edu.cnm.deepdive.cypherText.model.dao.QuoteRepository;
+import edu.cnm.deepdive.cypherText.model.dto.GuessDto;
 import edu.cnm.deepdive.cypherText.model.entity.CypherPair;
 import edu.cnm.deepdive.cypherText.model.entity.Game;
 import edu.cnm.deepdive.cypherText.model.entity.GameCypherPair;
@@ -45,8 +46,11 @@ public class GameService implements AbstractGameService {
 
   @Override
   public Game startOrGetGame(Game game, User user) {
+    // TODO: 12/24/2024 Add initial number of hints
     List<Game> currentGames = gameRepository.findCurrentGames(user);
     Game gameToPlay;
+    // TODO: 12/24/2024 Uncomment if statement
+
 //    if (!currentGames.isEmpty()) {
 //      gameToPlay = currentGames.getFirst();
 //    } else {
@@ -73,7 +77,11 @@ public class GameService implements AbstractGameService {
   }
 
   @Override
-  public Game submitGuess(UUID gameKey, Guess guess, User user) {
+  public Game submitGuess(UUID gameKey, GuessDto guessDto, User user) {
+    // TODO: 12/24/2024 Parse Guess
+    // TODO: 12/24/2024 Find Game
+    // TODO: 12/24/2024 Persist Guess
+
     return null;
   }
 
@@ -94,47 +102,37 @@ public class GameService implements AbstractGameService {
     return cypher;
   }
 
-
-
-private String EncodeQuote(String textToEncrypt, Map<Integer, Integer> gameCypher) {
+  private String EncodeQuote(String textToEncrypt, Map<Integer, Integer> gameCypher) {
+// TODO: 12/24/2024 turn into Stream
 
 //    return textToEncrypt.codePoints()
 //        .map(gameCypher::get)
 //        .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
 //        .toString();
-  StringBuilder builder = new StringBuilder();
-  for (int i = 0; i < textToEncrypt.length(); i++) {
-    int cp = Character.codePointAt(textToEncrypt, i);
-    if (Character.isAlphabetic(cp)) {
-      cp = gameCypher.get(cp);
+    StringBuilder builder = new StringBuilder();
+    for (int i = 0; i < textToEncrypt.length(); i++) {
+      int cp = Character.codePointAt(textToEncrypt, i);
+      if (Character.isAlphabetic(cp)) {
+        cp = gameCypher.get(cp);
+      }
+      builder.append(Character.toChars(cp));
     }
-    builder.append(Character.toChars(cp));
+    return builder.toString();
   }
-  return builder.toString();
-}
 
-private void persistCypher(Map<Integer, Integer> cypher, Game game, String textToEncrypt) {
-  textToEncrypt
-      .codePoints()
-      .filter(Character::isAlphabetic)
-      .distinct()
-      .forEach((cp) ->{
-        GameCypherPair gcp = new GameCypherPair();
-        CypherPair cypherPair = new CypherPair();
-        gcp.setGame(game);
-        cypherPair.setFrom(cp);
-        cypherPair.setTo(cypher.get(cp));
-        gcp.setCypherPair(cypherPair);
-        game.appendGameCypher(gcp);
-      });
-//  for (Map.Entry<Integer, Integer> entry : cypher.entrySet()) {
-//    GameCypherPair gcp = new GameCypherPair();
-//    CypherPair cypherPair = new CypherPair();
-//    gcp.setGame(game);
-//    cypherPair.setFrom(entry.getKey());
-//    cypherPair.setTo(entry.getValue());
-//    gcp.setCypherPair(cypherPair);
-//    game.appendGameCypher(gcp);
-//  }
-}
+  private void persistCypher(Map<Integer, Integer> cypher, Game game, String textToEncrypt) {
+    textToEncrypt
+        .codePoints()
+        .filter(Character::isAlphabetic)
+        .distinct()
+        .forEach((cp) -> {
+          GameCypherPair gcp = new GameCypherPair();
+          CypherPair cypherPair = new CypherPair();
+          gcp.setGame(game);
+          cypherPair.setFrom(cp);
+          cypherPair.setTo(cypher.get(cp));
+          gcp.setCypherPair(cypherPair);
+          game.appendGameCypher(gcp);
+        });
+  }
 }
