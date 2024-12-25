@@ -12,6 +12,8 @@ public interface AbstractGameService {
 
   Game getGame(UUID gameKey, User user);
 
-  Game submitGuess(UUID gameKey, GuessDto guessDto, User user);
+  Guess submitGuess(UUID gameKey, GuessDto guessDto, User user);
 
+  Guess getGuess(UUID gameKey, UUID guessKey, User currentUser);
 }
+

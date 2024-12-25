@@ -2,6 +2,7 @@ package edu.cnm.deepdive.cypherText.controller;
 
 import edu.cnm.deepdive.cypherText.model.dto.GuessDto;
 import edu.cnm.deepdive.cypherText.model.entity.Game;
+import edu.cnm.deepdive.cypherText.model.entity.Guess;
 import edu.cnm.deepdive.cypherText.service.AbstractGameService;
 import edu.cnm.deepdive.cypherText.service.AbstractUserService;
 import java.net.URI;
@@ -18,30 +19,44 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Profile("service")
+@RestController
+@RequestMapping("/games/{gameKey}/guesses")
 public class GuessController {
 
-  @Profile("service")
-  @RestController
-  @RequestMapping("/games/{gameKey}/guesses")
-  public class GameController {
 
-    private final AbstractUserService userService;
-    private final AbstractGameService gameService;
+  private final AbstractUserService userService;
+  private final AbstractGameService gameService;
 
-    @Autowired
-    public GameController(AbstractUserService userService, AbstractGameService gameService) {
-      this.userService = userService;
-      this.gameService = gameService;
-    }
-
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Game> post(@PathVariable UUID gameKey, @RequestBody GuessDto guessDto) {
-      Game createdGame = gameService.submitGuess(gameKey, guessDto, userService.getCurrentUser());
-      URI location = WebMvcLinkBuilder.linkTo(
-          WebMvcLinkBuilder.methodOn(getClass())
-              .get(createdGame.getKey())).toUri();
-      return ResponseEntity.created(location).body(createdGame);
-    }
-
+  @Autowired
+  public GuessController(AbstractUserService userService, AbstractGameService gameService) {
+    this.userService = userService;
+    this.gameService = gameService;
   }
+
+//  @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+//  public ResponseEntity<Game> post(@PathVariable UUID gameKey, @RequestBody GuessDto guessDto) {
+//    Game createdGame = gameService.submitGuess(gameKey, guessDto, userService.getCurrentUser());
+//    URI location = WebMvcLinkBuilder.linkTo(
+//        WebMvcLinkBuilder.methodOn(getClass())
+//            .get(createdGame.getKey())).toUri();
+//    return ResponseEntity.created(location).body(createdGame);
+//  }
+  @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<Guess> post(@PathVariable UUID gameKey, @RequestBody GuessDto guessDto) {
+    Guess newGuess = gameService.submitGuess(gameKey, guessDto, userService.getCurrentUser());
+    URI location = WebMvcLinkBuilder.linkTo(
+            WebMvcLinkBuilder.methodOn(GuessController.class)
+                .get(gameKey, newGuess.getKey())).toUri();
+    return ResponseEntity.created(location).body(newGuess);
+  }
+
+  @GetMapping(path = "/{guessKey}", produces = MediaType.APPLICATION_JSON_VALUE)
+  public Guess get(@PathVariable UUID gameKey, @PathVariable UUID guessKey) {
+    return gameService.getGuess(gameKey, guessKey, userService.getCurrentUser());
+  }
+
+
 }
+
+

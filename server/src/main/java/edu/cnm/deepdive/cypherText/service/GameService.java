@@ -2,7 +2,9 @@ package edu.cnm.deepdive.cypherText.service;
 
 import edu.cnm.deepdive.cypherText.model.dao.GameCypherPairRepository;
 import edu.cnm.deepdive.cypherText.model.dao.GameRepository;
+import edu.cnm.deepdive.cypherText.model.dao.GuessRepository;
 import edu.cnm.deepdive.cypherText.model.dao.QuoteRepository;
+import edu.cnm.deepdive.cypherText.model.dao.UserRepository;
 import edu.cnm.deepdive.cypherText.model.dto.GuessDto;
 import edu.cnm.deepdive.cypherText.model.entity.CypherPair;
 import edu.cnm.deepdive.cypherText.model.entity.Game;
@@ -30,16 +32,19 @@ public class GameService implements AbstractGameService {
   private static final int LENGTH = ALPHABET.length();
   private final GameRepository gameRepository;
   private final QuoteRepository quoteRepository;
+  private final GuessRepository guessRepository;
   private final GameCypherPairRepository gameCypherPairRepository;
   private final RandomGenerator rng;
   private Map<Integer, Integer> gameCypher;
 
   @Autowired
   public GameService(GameRepository gameRepository, QuoteRepository quoteRepository,
+      GuessRepository guessRepository,
       GameCypherPairRepository gameCypherPairRepository,
       RandomGenerator rng) {
     this.gameRepository = gameRepository;
     this.quoteRepository = quoteRepository;
+    this.guessRepository = guessRepository;
     this.gameCypherPairRepository = gameCypherPairRepository;
     this.rng = rng;
   }
@@ -77,12 +82,23 @@ public class GameService implements AbstractGameService {
   }
 
   @Override
-  public Game submitGuess(UUID gameKey, GuessDto guessDto, User user) {
-    // TODO: 12/24/2024 Parse Guess
-    // TODO: 12/24/2024 Find Game
-    // TODO: 12/24/2024 Persist Guess
+  public Guess submitGuess(UUID gameKey, GuessDto guessDto, User user) {
+    return gameRepository
+        .findGameByKeyAndUser(gameKey, user)
+        .map((gm)-> {
+            Guess guess = new Guess();
+            guess.setGame(gm);
+            guess.setCypherPair(guessDto.getGuessText());
+            return guessRepository.save(guess);
+        })
+        .orElseThrow();
+  }
 
-    return null;
+  @Override
+  public Guess getGuess(UUID gameKey, UUID guessKey, User user) {
+    return guessRepository
+        .findByGameKeyAndGuessKeyAnUser(gameKey, guessKey, user)
+        .orElseThrow();
   }
 
   private Map<Integer, Integer> createCypher() {

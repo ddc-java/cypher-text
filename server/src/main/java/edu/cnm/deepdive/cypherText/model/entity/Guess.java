@@ -2,6 +2,7 @@ package edu.cnm.deepdive.cypherText.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -13,6 +14,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import java.time.Instant;
+import java.util.UUID;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.lang.NonNull;
 
@@ -23,6 +25,11 @@ public class Guess {
   @GeneratedValue
   @Column(name = "guess_id")
   private Long id;
+
+  @NonNull
+  @Column(name = "external_key", nullable = false, updatable = false, unique = true, columnDefinition = "UUID")
+  @JsonProperty(access = Access.READ_ONLY)
+  private UUID key;
 
 //  @NonNull
   @ManyToOne(optional = false, fetch = FetchType.EAGER)
@@ -44,6 +51,11 @@ public class Guess {
 
   public Long getId() {
     return id;
+  }
+
+  @NonNull
+  public UUID getKey() {
+    return key;
   }
 
   public void setId(Long id) {
@@ -68,7 +80,11 @@ public class Guess {
     return cypherPair;
   }
 
-  public void setCypherPair(CypherPair cypherPair) {
-    this.cypherPair = cypherPair;
+  public void setCypherPair(String guessText) {
+    int[] guessArray = guessText.codePoints().filter(Character::isAlphabetic)
+        .limit(2)
+        .findFirst()
+        .stream().toArray();
+    this.cypherPair = new CypherPair(guessArray[0], guessArray[1]);
   }
 }
