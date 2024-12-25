@@ -54,11 +54,10 @@ public class GameService implements AbstractGameService {
     // TODO: 12/24/2024 Add initial number of hints
     List<Game> currentGames = gameRepository.findCurrentGames(user);
     Game gameToPlay;
-    // TODO: 12/24/2024 Uncomment if statement
 
-//    if (!currentGames.isEmpty()) {
-//      gameToPlay = currentGames.getFirst();
-//    } else {
+    if (!currentGames.isEmpty()) {
+      gameToPlay = currentGames.getFirst();
+    } else {
     int quotesLength = quoteRepository.findAll().size();
     gameToPlay = game;
     gameToPlay.setUser(user);
@@ -70,7 +69,7 @@ public class GameService implements AbstractGameService {
     String encodedQuote = EncodeQuote(textToEncrypt, gameCypher);
     gameToPlay.setEncodedQuote(encodedQuote);
     persistCypher(gameCypher, gameToPlay, textToEncrypt);
-//    }
+    }
     return gameRepository.save(gameToPlay);
   }
 
@@ -86,6 +85,7 @@ public class GameService implements AbstractGameService {
     return gameRepository
         .findGameByKeyAndUser(gameKey, user)
         .map((gm)-> {
+          // TODO: 12/24/2024 Check if game solved
             Guess guess = new Guess();
             guess.setGame(gm);
             guess.setCypherPair(guessDto.getGuessText());
