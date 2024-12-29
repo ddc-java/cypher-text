@@ -30,6 +30,7 @@ public class GameService implements AbstractGameService {
   private static final String ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   private static final int[] ALPHABET_CP_ARRAY = ALPHABET.codePoints().toArray();
   private static final int LENGTH = ALPHABET.length();
+  private static final Character ENCODED_CHAR = '_';
   private final GameRepository gameRepository;
   private final QuoteRepository quoteRepository;
   private final GuessRepository guessRepository;
@@ -58,17 +59,18 @@ public class GameService implements AbstractGameService {
     if (!currentGames.isEmpty()) {
       gameToPlay = currentGames.getFirst();
     } else {
-    int quotesLength = quoteRepository.findAll().size();
-    gameToPlay = game;
-    gameToPlay.setUser(user);
-    long quoteId = rng.nextLong(quotesLength);
-    Quote quoteById = quoteRepository.findQuoteById(quoteId);
-    gameToPlay.setQuote(quoteById);
-    String textToEncrypt = quoteById.getQuoteText().toUpperCase();
-    gameCypher = createCypher();
-    String encodedQuote = EncodeQuote(textToEncrypt, gameCypher);
-    gameToPlay.setEncodedQuote(encodedQuote);
-    persistCypher(gameCypher, gameToPlay, textToEncrypt);
+      int quotesLength = quoteRepository.findAll().size();
+      gameToPlay = game;
+      gameToPlay.setUser(user);
+      long quoteId = rng.nextLong(quotesLength);
+      Quote quoteById = quoteRepository.findQuoteById(quoteId);
+      gameToPlay.setQuote(quoteById);
+      String textToEncrypt = quoteById.getQuoteText().toUpperCase();
+      gameCypher = createCypher();
+      String encodedQuote = EncodeQuote(textToEncrypt, gameCypher);
+      gameToPlay.setEncodedQuote(encodedQuote);
+      persistCypher(gameCypher, gameToPlay, textToEncrypt);
+      game.setDecodedQuote(DecodeCypher(game));
     }
     return gameRepository.save(gameToPlay);
   }
@@ -81,25 +83,28 @@ public class GameService implements AbstractGameService {
   }
 
   @Override
-  public Guess submitGuess(UUID gameKey, GuessDto guessDto, User user) {
-    return gameRepository
+  public Game submitGuess(UUID gameKey, GuessDto guessDto, User user) {
+    Game game = gameRepository.findGameByKeyAndUser(gameKey, user).orElseThrow();
+    gameRepository
         .findGameByKeyAndUser(gameKey, user)
-        .map((gm)-> {
+        .map((gm) -> {
           // TODO: 12/24/2024 Check if game solved
-            Guess guess = new Guess();
-            guess.setGame(gm);
-            guess.setCypherPair(guessDto.getGuessText());
-            return guessRepository.save(guess);
+          Guess guess = new Guess();
+          guess.setGame(gm);
+          guess.setCypherPair(guessDto.getGuessText());
+          return guessRepository.save(guess);
         })
         .orElseThrow();
+    game.setDecodedQuote(DecodeCypher(game));
+    return gameRepository.save(game);
   }
 
-  @Override
-  public Guess getGuess(UUID gameKey, UUID guessKey, User user) {
-    return guessRepository
-        .findByGameKeyAndGuessKeyAnUser(gameKey, guessKey, user)
-        .orElseThrow();
-  }
+//  @Override
+//  public Game getGuess(UUID gameKey, UUID guessKey, User user) {
+//    return guessRepository
+//        .findByGameKeyAndGuessKeyAnUser(gameKey, guessKey, user)
+//        .orElseThrow();
+//  }
 
   private Map<Integer, Integer> createCypher() {
     Map<Integer, Integer> cypher = new HashMap<>();
@@ -134,6 +139,28 @@ public class GameService implements AbstractGameService {
       builder.append(Character.toChars(cp));
     }
     return builder.toString();
+  }
+
+  private String DecodeCypher(Game game) {
+    StringBuilder decodedText = new StringBuilder();
+    game.getEncodedQuote()
+        .codePoints()
+        .forEach((cp) -> {
+              if (Character.isAlphabetic(cp)) {
+                Guess currentGuess = guessRepository
+                    .findByGameKeyAndFromChar(game.getKey(), cp)
+                    .orElseThrow();
+                if (currentGuess != null) {
+                  decodedText.append(currentGuess.getCypherPair().getTo());
+                } else {
+                  decodedText.append(ENCODED_CHAR);
+                }
+              } else {
+                decodedText.append(cp);
+              }
+            }
+        );
+    return decodedText.toString();
   }
 
   private void persistCypher(Map<Integer, Integer> cypher, Game game, String textToEncrypt) {

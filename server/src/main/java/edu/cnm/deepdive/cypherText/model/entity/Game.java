@@ -57,6 +57,9 @@ public class Game {
   @JsonProperty(access = Access.READ_WRITE)
   private String encodedQuote;
 
+  @JsonProperty(access = Access.READ_WRITE)
+  private String decodedQuote;
+
   @OneToMany(mappedBy = "game", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
   @JsonProperty(access = Access.READ_WRITE)
   private final List<GameCypherPair> gameCypher = new LinkedList<>();
@@ -100,6 +103,14 @@ public class Game {
     this.encodedQuote = encodedQuote;
   }
 
+  public String getDecodedQuote() {
+    return decodedQuote;
+  }
+
+  public void setDecodedQuote(String decodedQuote) {
+    this.decodedQuote = decodedQuote;
+  }
+
   public List<GameCypherPair> getGameCypher() {
     return gameCypher;
   }
@@ -109,8 +120,7 @@ public class Game {
   }
 
   public boolean isSolved() {
-    return false;
-    // TODO: 12/9/2024 return the boolean value of the encrypted quote decrypted by the user cypher compared to the original quote.
+    return getDecodedQuote().equals(getQuote().getQuoteText().toUpperCase());
   }
 
   @PrePersist

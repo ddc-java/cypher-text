@@ -42,20 +42,20 @@ public class GuessController {
 //            .get(createdGame.getKey())).toUri();
 //    return ResponseEntity.created(location).body(createdGame);
 //  }
-  @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<Guess> post(@PathVariable UUID gameKey, @RequestBody GuessDto guessDto) {
-    Guess newGuess = gameService.submitGuess(gameKey, guessDto, userService.getCurrentUser());
-    URI location = WebMvcLinkBuilder.linkTo(
-            WebMvcLinkBuilder.methodOn(GuessController.class)
-                .get(gameKey, newGuess.getKey())).toUri();
-    return ResponseEntity.created(location).body(newGuess);
-  }
+//  @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+//  public ResponseEntity<Game> post(@PathVariable UUID gameKey, @RequestBody GuessDto guessDto) {
+//    Guess newGuess = gameService.submitGuess(gameKey, guessDto, userService.getCurrentUser());
+//    URI location = WebMvcLinkBuilder.linkTo(
+//            WebMvcLinkBuilder.methodOn(GuessController.class)
+//                .get(gameKey, newGuess.getKey())).toUri();
+//    return ResponseEntity.created(location).body(newGuess);
+//  }
 
-  @GetMapping(path = "/{guessKey}", produces = MediaType.APPLICATION_JSON_VALUE)
-  public Guess get(@PathVariable UUID gameKey, @PathVariable UUID guessKey) {
-    return gameService.getGuess(gameKey, guessKey, userService.getCurrentUser());
-  }
-
+//  @GetMapping(path = "/{guessKey}", produces = MediaType.APPLICATION_JSON_VALUE)
+//  public Game get(@PathVariable UUID gameKey, @PathVariable UUID guessKey) {
+//    return gameService.getGuess(gameKey, guessKey, userService.getCurrentUser());
+//  }
+// TODO: 12/26/2024 DO I need this GET endpoint now that I am returning a Game?
 
 }
 

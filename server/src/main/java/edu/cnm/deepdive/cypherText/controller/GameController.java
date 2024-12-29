@@ -2,6 +2,7 @@ package edu.cnm.deepdive.cypherText.controller;
 
 import edu.cnm.deepdive.cypherText.model.dto.GuessDto;
 import edu.cnm.deepdive.cypherText.model.entity.Game;
+import edu.cnm.deepdive.cypherText.model.entity.Guess;
 import edu.cnm.deepdive.cypherText.service.AbstractGameService;
 import edu.cnm.deepdive.cypherText.service.AbstractUserService;
 import java.net.URI;
@@ -32,13 +33,25 @@ public class GameController {
     this.gameService = gameService;
   }
 
-  @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+  @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE,
+      produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<Game> post(@RequestBody Game game) {
     Game createdGame = gameService.startOrGetGame(game, userService.getCurrentUser());
     URI location = WebMvcLinkBuilder.linkTo(
         WebMvcLinkBuilder.methodOn(getClass())
             .get(createdGame.getKey())).toUri();
     return ResponseEntity.created(location).body(createdGame);
+  }
+
+  @PostMapping(path = "/games/{gameKey}/guesses",
+      consumes = MediaType.APPLICATION_JSON_VALUE,
+      produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<Game> post(@PathVariable UUID gameKey, @RequestBody GuessDto guessDto) {
+    Game game = gameService.submitGuess(gameKey, guessDto, userService.getCurrentUser());
+    URI location = WebMvcLinkBuilder.linkTo(
+        WebMvcLinkBuilder.methodOn(getClass())
+            .get(game.getKey())).toUri();
+    return ResponseEntity.created(location).body(game);
   }
 
   @GetMapping(path = "/{gameKey}", produces = MediaType.APPLICATION_JSON_VALUE)
