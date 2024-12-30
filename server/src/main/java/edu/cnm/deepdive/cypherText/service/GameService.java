@@ -4,7 +4,6 @@ import edu.cnm.deepdive.cypherText.model.dao.GameCypherPairRepository;
 import edu.cnm.deepdive.cypherText.model.dao.GameRepository;
 import edu.cnm.deepdive.cypherText.model.dao.GuessRepository;
 import edu.cnm.deepdive.cypherText.model.dao.QuoteRepository;
-import edu.cnm.deepdive.cypherText.model.dao.UserRepository;
 import edu.cnm.deepdive.cypherText.model.dto.GuessDto;
 import edu.cnm.deepdive.cypherText.model.entity.CypherPair;
 import edu.cnm.deepdive.cypherText.model.entity.Game;
@@ -12,13 +11,11 @@ import edu.cnm.deepdive.cypherText.model.entity.GameCypherPair;
 import edu.cnm.deepdive.cypherText.model.entity.Guess;
 import edu.cnm.deepdive.cypherText.model.entity.Quote;
 import edu.cnm.deepdive.cypherText.model.entity.User;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.random.RandomGenerator;
-import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
@@ -70,7 +67,8 @@ public class GameService implements AbstractGameService {
       String encodedQuote = EncodeQuote(textToEncrypt, gameCypher);
       gameToPlay.setEncodedQuote(encodedQuote);
       persistCypher(gameCypher, gameToPlay, textToEncrypt);
-      game.setDecodedQuote(DecodeCypher(game));
+      gameRepository.save(gameToPlay);
+      gameToPlay.setDecodedQuote(DecodeCypher(gameToPlay));
     }
     return gameRepository.save(gameToPlay);
   }
@@ -91,7 +89,13 @@ public class GameService implements AbstractGameService {
           // TODO: 12/24/2024 Check if game solved
           Guess guess = new Guess();
           guess.setGame(gm);
-          guess.setCypherPair(guessDto.getGuessText());
+          int[] guessChars = guessDto.getGuessText()
+              .toUpperCase()
+              .codePoints()
+              .filter(Character::isAlphabetic)
+              .limit(2)
+              .toArray();
+          guess.setCypherPair(guessChars[0], guessChars[1]);
           return guessRepository.save(guess);
         })
         .orElseThrow();
@@ -99,12 +103,12 @@ public class GameService implements AbstractGameService {
     return gameRepository.save(game);
   }
 
-//  @Override
-//  public Game getGuess(UUID gameKey, UUID guessKey, User user) {
-//    return guessRepository
-//        .findByGameKeyAndGuessKeyAnUser(gameKey, guessKey, user)
-//        .orElseThrow();
-//  }
+  @Override
+  public Guess getGuess(UUID gameKey, UUID guessKey, User user) {
+    return guessRepository
+        .findByGameKeyAndGuessKeyAnUser(gameKey, guessKey, user)
+        .orElseThrow();
+  }
 
   private Map<Integer, Integer> createCypher() {
     Map<Integer, Integer> cypher = new HashMap<>();
@@ -143,20 +147,25 @@ public class GameService implements AbstractGameService {
 
   private String DecodeCypher(Game game) {
     StringBuilder decodedText = new StringBuilder();
+    UUID gameKey = game.getKey();
+    List<Guess> guesses = guessRepository.findByGameKey(gameKey);
+    Map<Integer, Integer> decodeCypher = new HashMap<>();
+    if(!guesses.isEmpty()) {
+      guesses.forEach((guess) -> {
+        decodeCypher.put(guess.getCypherPair().getFrom(), guess.getCypherPair().getTo());
+      });
+    }
     game.getEncodedQuote()
         .codePoints()
         .forEach((cp) -> {
               if (Character.isAlphabetic(cp)) {
-                Guess currentGuess = guessRepository
-                    .findByGameKeyAndFromChar(game.getKey(), cp)
-                    .orElseThrow();
-                if (currentGuess != null) {
-                  decodedText.append(currentGuess.getCypherPair().getTo());
+                if (decodeCypher.get(cp) != null) {
+                  decodedText.append(Character.toChars(decodeCypher.get(cp)));
                 } else {
                   decodedText.append(ENCODED_CHAR);
                 }
               } else {
-                decodedText.append(cp);
+                decodedText.append(Character.toChars(cp));
               }
             }
         );

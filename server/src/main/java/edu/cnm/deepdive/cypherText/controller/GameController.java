@@ -43,7 +43,7 @@ public class GameController {
     return ResponseEntity.created(location).body(createdGame);
   }
 
-  @PostMapping(path = "/games/{gameKey}/guesses",
+  @PostMapping(path = "/{gameKey}/guesses",
       consumes = MediaType.APPLICATION_JSON_VALUE,
       produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<Game> post(@PathVariable UUID gameKey, @RequestBody GuessDto guessDto) {

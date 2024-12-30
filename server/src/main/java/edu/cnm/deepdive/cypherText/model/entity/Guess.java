@@ -11,6 +11,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import java.time.Instant;
@@ -80,11 +81,12 @@ public class Guess {
     return cypherPair;
   }
 
-  public void setCypherPair(String guessText) {
-    int[] guessArray = guessText.codePoints().filter(Character::isAlphabetic)
-        .limit(2)
-        .findFirst()
-        .stream().toArray();
-    this.cypherPair = new CypherPair(guessArray[0], guessArray[1]);
+  public void setCypherPair(int fromCp, int toCp) {
+    this.cypherPair = new CypherPair(fromCp, toCp);
+  }
+
+  @PrePersist
+  private void generateKey() {
+    key = UUID.randomUUID();
   }
 }

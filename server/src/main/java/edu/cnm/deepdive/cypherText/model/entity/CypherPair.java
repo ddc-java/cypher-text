@@ -8,11 +8,11 @@ import org.springframework.lang.NonNull;
 @Embeddable
 public class CypherPair {
 
-  @NonNull
+//  @NonNull
   @Column(name = "from_char")
   private Integer from;
 
-  @NonNull
+//  @NonNull
   @Column(name = "to_char")
   private Integer to;
 
