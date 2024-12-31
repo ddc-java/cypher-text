@@ -153,19 +153,14 @@ public class GameService implements AbstractGameService {
   private String DecodeCypher(Game game) {
     StringBuilder decodedText = new StringBuilder();
     UUID gameKey = game.getKey();
-    List<Guess> guesses = guessRepository.findByGameKey(gameKey);
-    Map<Integer, Integer> decodeCypher = new HashMap<>();
-    if(!guesses.isEmpty()) {
-      guesses.forEach((guess) -> {
-        decodeCypher.put(guess.getCypherPair().getFrom(), guess.getCypherPair().getTo());
-      });
-    }
     game.getEncodedQuote()
         .codePoints()
         .forEach((cp) -> {
               if (Character.isAlphabetic(cp)) {
-                if (decodeCypher.get(cp) != null) {
-                  decodedText.append(Character.toChars(decodeCypher.get(cp)));
+                Guess cypherGuess = guessRepository.findByGameKeyAndFromChar(gameKey, cp)
+                    .orElse(null);
+                if (cypherGuess != null) {
+                  decodedText.append(Character.toChars(cypherGuess.getCypherPair().getTo()));
                 } else {
                   decodedText.append(ENCODED_CHAR);
                 }
