@@ -62,7 +62,13 @@ public class Game {
 
   @OneToMany(mappedBy = "game", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
   @JsonProperty(access = Access.READ_WRITE)
+  @JsonIgnore
   private final List<GameCypherPair> gameCypher = new LinkedList<>();
+
+  @Column(nullable = false, updatable = false)
+//  @Min(0)
+//  @Max(3)
+  private int initialHints;
 
   private boolean solved;
 
@@ -117,6 +123,14 @@ public class Game {
 
   public void appendGameCypher(GameCypherPair gameCypherPair) {
     this.gameCypher.add(gameCypherPair);
+  }
+
+  public int getInitialHints() {
+    return initialHints;
+  }
+
+  public void setInitialHints(int initialHints) {
+    this.initialHints = initialHints;
   }
 
   public boolean isSolved() {

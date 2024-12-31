@@ -32,6 +32,8 @@ public class GameCypherPair {
   @JsonUnwrapped
   private CypherPair cypherPair;
 
+  private boolean hint;
+
   public long getId() {
     return id;
   }
@@ -57,4 +59,13 @@ public class GameCypherPair {
   public void setCypherPair( CypherPair cypherPair) {
     this.cypherPair = cypherPair;
   }
+
+  public boolean isHint() {
+    return hint;
+  }
+
+  public void setHint(boolean hint) {
+    this.hint = hint;
+  }
+
 }

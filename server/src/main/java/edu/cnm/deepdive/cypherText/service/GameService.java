@@ -59,15 +59,20 @@ public class GameService implements AbstractGameService {
       int quotesLength = quoteRepository.findAll().size();
       gameToPlay = game;
       gameToPlay.setUser(user);
+
       long quoteId = rng.nextLong(quotesLength);
       Quote quoteById = quoteRepository.findQuoteById(quoteId);
       gameToPlay.setQuote(quoteById);
+
       String textToEncrypt = quoteById.getQuoteText().toUpperCase();
       gameCypher = createCypher();
       String encodedQuote = EncodeQuote(textToEncrypt, gameCypher);
       gameToPlay.setEncodedQuote(encodedQuote);
+
       persistCypher(gameCypher, gameToPlay, textToEncrypt);
       gameRepository.save(gameToPlay);
+
+      setInitialHints(gameToPlay);
       gameToPlay.setDecodedQuote(DecodeCypher(gameToPlay));
     }
     return gameRepository.save(gameToPlay);
@@ -184,7 +189,29 @@ public class GameService implements AbstractGameService {
           cypherPair.setFrom(cp);
           cypherPair.setTo(cypher.get(cp));
           gcp.setCypherPair(cypherPair);
+          gcp.setHint(false);
           game.appendGameCypher(gcp);
         });
+  }
+
+  private void setInitialHints(Game gameToPlay) {
+    int quoteLength = gameToPlay.getQuote().getQuoteText().length();
+    int initialHintNum = gameToPlay.getInitialHints();
+    int hintLimit = (initialHintNum >= quoteLength) ? quoteLength -1 : initialHintNum;
+    for(int hintNum = 0; hintNum < hintLimit; hintNum++) {
+      long hintLoc = rng.nextLong(gameCypher.size() + 1);
+      GameCypherPair gcp;
+      do{
+        gcp = gameCypherPairRepository
+            .findGameCypherPairByGameKeyAndId(gameToPlay.getKey(), hintLoc)
+            .orElseThrow();
+      } while(gcp.isHint());
+      gcp.setHint(true);
+      gameCypherPairRepository.save(gcp);
+      Guess guess = new Guess();
+      guess.setGame(gameToPlay);
+      guess.setCypherPair(gcp.getCypherPair().getTo(), gcp.getCypherPair().getFrom());
+      guessRepository.save(guess);
+    }
   }
 }
