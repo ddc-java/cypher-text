@@ -28,6 +28,8 @@ public class GameService implements AbstractGameService {
   private static final int[] ALPHABET_CP_ARRAY = ALPHABET.codePoints().toArray();
   private static final int LENGTH = ALPHABET.length();
   private static final Character ENCODED_CHAR = '_';
+  private static final String HINT_CHAR = "?";
+  private static final int HINT_CHAR_CP = Character.codePointOf(HINT_CHAR);
   private final GameRepository gameRepository;
   private final QuoteRepository quoteRepository;
   private final GuessRepository guessRepository;
@@ -92,20 +94,71 @@ public class GameService implements AbstractGameService {
         .findGameByKeyAndUser(gameKey, user)
         .map((gm) -> {
           // TODO: 12/24/2024 Check if game solved
-          Guess guess = new Guess();
-          guess.setGame(gm);
-          int[] guessChars = guessDto.getGuessText()
+          Integer[] guessChars = guessDto.getGuessText()
               .toUpperCase()
               .codePoints()
-              .filter(Character::isAlphabetic)
+              .filter(cp ->
+                  Character.isAlphabetic(cp)
+                      || cp == HINT_CHAR_CP)
               .limit(2)
-              .toArray();
-          guess.setCypherPair(guessChars[0], guessChars[1]);
+              .boxed()
+              .toArray(Integer[]::new);
+          validateGuess(guessChars, game);
+          Guess guess = guessRepository
+              .findByGameKeyAndFromChar(gameKey, guessChars[0])
+              .orElse(null);
+          if(guess != null) {
+            // TODO: 12/31/2024 Check if Guess already exists and this is an update
+            if(Character.isAlphabetic(guessChars[1])) {
+              guess.setCypherPair(guessChars[0], guessChars[1]);
+            }else {
+              GameCypherPair gcp = gameCypherPairRepository.findGameCypherPairByGameKeyAndToCp(gameKey, guessChars[0]).orElseThrow();
+              gcp.setHint(true);
+              gameCypherPairRepository.save(gcp);
+              guess.setCypherPair(guessChars[0], gcp.getCypherPair().getFrom());
+            }
+          } else {
+            guess = new Guess();
+            guess.setGame(gm);
+            if (Character.isAlphabetic(guessChars[0])) {
+              if (Character.isAlphabetic(guessChars[1])) {
+                guess.setCypherPair(guessChars[0], guessChars[1]);
+              } else {
+                GameCypherPair gcp = gameCypherPairRepository.findGameCypherPairByGameKeyAndToCp(gameKey, guessChars[0]).orElseThrow();
+                gcp.setHint(true);
+                gameCypherPairRepository.save(gcp);
+                guess.setCypherPair(guessChars[0], gcp.getCypherPair().getFrom());
+              }
+            } else if (Character.isAlphabetic(guessChars[1])) {
+              GameCypherPair gcp = gameCypherPairRepository.findGameCypherPairByGameKeyAndFromCp(gameKey, guessChars[1]).orElseThrow();
+              gcp.setHint(true);
+              gameCypherPairRepository.save(gcp);
+              guess.setCypherPair(gcp.getCypherPair().getTo(), guessChars[1]);
+            } else {
+              // TODO: 12/31/2024 Create random Hint from undecoded cyphers or incorrect cyphers
+            }
+          }
           return guessRepository.save(guess);
         })
         .orElseThrow();
     game.setDecodedQuote(DecodeCypher(game));
     return gameRepository.save(game);
+  }
+
+  private void validateGuess(Integer[] guessChars, Game game) {
+    if (guessChars[0] == null) {
+      throw new IllegalGuessException(
+          "Guess must contain either a pair of characters or the hint character.");
+    }
+    if (Character.isAlphabetic(guessChars[0]) && guessChars[1] == null) {
+      throw new IllegalGuessException("Guess must have 2 characters to make a cypher guess.");
+    }
+    if (gameCypherPairRepository
+        .findGameCypherPairByGameKeyAndFromCp(game.getKey(), guessChars[0])
+        .orElse(null) == null) {
+      throw new IllegalGuessException(
+          "First character of Guess Must be from the encoded cypher provided.");
+    }
   }
 
   @Override
@@ -192,15 +245,15 @@ public class GameService implements AbstractGameService {
   private void setInitialHints(Game gameToPlay) {
     int quoteLength = gameToPlay.getQuote().getQuoteText().length();
     int initialHintNum = gameToPlay.getInitialHints();
-    int hintLimit = (initialHintNum >= quoteLength) ? quoteLength -1 : initialHintNum;
-    for(int hintNum = 0; hintNum < hintLimit; hintNum++) {
+    int hintLimit = (initialHintNum >= quoteLength) ? quoteLength - 1 : initialHintNum;
+    for (int hintNum = 0; hintNum < hintLimit; hintNum++) {
       long hintLoc = rng.nextLong(gameCypher.size() + 1);
       GameCypherPair gcp;
-      do{
+      do {
         gcp = gameCypherPairRepository
             .findGameCypherPairByGameKeyAndId(gameToPlay.getKey(), hintLoc)
             .orElseThrow();
-      } while(gcp.isHint());
+      } while (gcp.isHint());
       gcp.setHint(true);
       gameCypherPairRepository.save(gcp);
       Guess guess = new Guess();
