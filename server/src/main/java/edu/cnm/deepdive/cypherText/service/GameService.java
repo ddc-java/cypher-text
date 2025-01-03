@@ -28,8 +28,7 @@ public class GameService implements AbstractGameService {
   private static final int[] ALPHABET_CP_ARRAY = ALPHABET.codePoints().toArray();
   private static final int LENGTH = ALPHABET.length();
   private static final Character ENCODED_CHAR = '_';
-  private static final String HINT_CHAR = "?";
-  private static final int HINT_CHAR_CP = Character.codePointOf(HINT_CHAR);
+  private static final int HINT_CHAR_CP = '\u003F';
   private final GameRepository gameRepository;
   private final QuoteRepository quoteRepository;
   private final GuessRepository guessRepository;
