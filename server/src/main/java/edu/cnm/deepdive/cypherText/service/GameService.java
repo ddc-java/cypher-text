@@ -150,7 +150,7 @@ public class GameService implements AbstractGameService {
     }
     if (guessChars[0] != HINT_CHAR_CP
         && gameCypherPairRepository
-        .findGameCypherPairByGameKeyAndFromCp(game.getKey(), guessChars[0])
+        .findGameCypherPairByGameKeyAndToCp(game.getKey(), guessChars[0])
         .orElse(null) == null) {
       throw new IllegalGuessException(
           "First character of Guess Must be from the encoded cypher provided.");
