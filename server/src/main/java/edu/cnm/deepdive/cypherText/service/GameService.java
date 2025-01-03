@@ -74,7 +74,7 @@ public class GameService implements AbstractGameService {
       persistCypher(gameCypher, gameToPlay, textToEncrypt);
       gameRepository.save(gameToPlay);
 
-      setInitialHints(gameToPlay);
+      setRandomHints(gameToPlay, gameToPlay.getInitialHints());
       gameToPlay.setDecodedQuote(DecodeCypher(gameToPlay));
     }
     return gameRepository.save(gameToPlay);
@@ -108,15 +108,11 @@ public class GameService implements AbstractGameService {
               .findByGameKeyAndFromChar(gameKey, guessChars[0])
               .orElse(null);
           if(guess != null) {
-            // TODO: 12/31/2024 Check if Guess already exists and this is an update
-            if(Character.isAlphabetic(guessChars[1])) {
               guess.setCypherPair(guessChars[0], guessChars[1]);
-            }else {
-              GameCypherPair gcp = gameCypherPairRepository.findGameCypherPairByGameKeyAndToCp(gameKey, guessChars[0]).orElseThrow();
-              gcp.setHint(true);
-              gameCypherPairRepository.save(gcp);
-              guess.setCypherPair(guessChars[0], gcp.getCypherPair().getFrom());
-            }
+              guessRepository.save(guess);
+              guess = new Guess();
+              guess.setGame(game);
+              guess.setCypherPair(guessChars[0], guessChars[1]);
           } else {
             guess = new Guess();
             guess.setGame(gm);
@@ -135,7 +131,7 @@ public class GameService implements AbstractGameService {
               gameCypherPairRepository.save(gcp);
               guess.setCypherPair(gcp.getCypherPair().getTo(), guessChars[1]);
             } else {
-              // TODO: 12/31/2024 Create random Hint from undecoded cyphers or incorrect cyphers
+              setRandomHints(game, 1);
             }
           }
           return guessRepository.save(guess);
@@ -242,14 +238,13 @@ public class GameService implements AbstractGameService {
         });
   }
 
-  private void setInitialHints(Game gameToPlay) {
+  private void setRandomHints(Game gameToPlay, int initialHintNum) {
     int quoteLength = gameToPlay.getQuote().getQuoteText().length();
-    int initialHintNum = gameToPlay.getInitialHints();
     int hintLimit = (initialHintNum >= quoteLength) ? quoteLength - 1 : initialHintNum;
     for (int hintNum = 0; hintNum < hintLimit; hintNum++) {
-      long hintLoc = rng.nextLong(gameCypher.size() + 1);
       GameCypherPair gcp;
       do {
+        long hintLoc = rng.nextLong(gameCypher.size() + 1);
         gcp = gameCypherPairRepository
             .findGameCypherPairByGameKeyAndId(gameToPlay.getKey(), hintLoc)
             .orElseThrow();

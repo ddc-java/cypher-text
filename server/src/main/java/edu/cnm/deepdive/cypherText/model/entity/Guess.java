@@ -81,7 +81,7 @@ public class Guess {
     return cypherPair;
   }
 
-  public void setCypherPair(int fromCp, int toCp) {
+  public void setCypherPair(Integer fromCp, Integer toCp) {
     this.cypherPair = new CypherPair(fromCp, toCp);
   }
 
