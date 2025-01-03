@@ -148,7 +148,8 @@ public class GameService implements AbstractGameService {
     if (Character.isAlphabetic(guessChars[0]) && guessChars[1] == null) {
       throw new IllegalGuessException("Guess must have 2 characters to make a cypher guess.");
     }
-    if (gameCypherPairRepository
+    if (guessChars[0] != HINT_CHAR_CP
+        && gameCypherPairRepository
         .findGameCypherPairByGameKeyAndFromCp(game.getKey(), guessChars[0])
         .orElse(null) == null) {
       throw new IllegalGuessException(
