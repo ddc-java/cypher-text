@@ -137,6 +137,10 @@ public class Game {
     return getDecodedQuote().equals(getQuote().getQuoteText().toUpperCase());
   }
 
+  public void setSolved() {
+    this.solved = true;
+  }
+
   @PrePersist
   private void generateKey() {
     key = UUID.randomUUID();

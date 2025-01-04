@@ -103,40 +103,34 @@ public class GameService implements AbstractGameService {
               .boxed()
               .toArray(Integer[]::new);
           validateGuess(guessChars, game);
-          Guess guess = guessRepository
-              .findByGameKeyAndFromChar(gameKey, guessChars[0])
-              .orElse(null);
-          if(guess != null) {
+          Guess guess = new Guess();
+          guess.setGame(gm);
+          if (Character.isAlphabetic(guessChars[0])) {
+            if (Character.isAlphabetic(guessChars[1])) {
               guess.setCypherPair(guessChars[0], guessChars[1]);
-              guessRepository.save(guess);
-              guess = new Guess();
-              guess.setGame(game);
-              guess.setCypherPair(guessChars[0], guessChars[1]);
-          } else {
-            guess = new Guess();
-            guess.setGame(gm);
-            if (Character.isAlphabetic(guessChars[0])) {
-              if (Character.isAlphabetic(guessChars[1])) {
-                guess.setCypherPair(guessChars[0], guessChars[1]);
-              } else {
-                GameCypherPair gcp = gameCypherPairRepository.findGameCypherPairByGameKeyAndToCp(gameKey, guessChars[0]).orElseThrow();
-                gcp.setHint(true);
-                gameCypherPairRepository.save(gcp);
-                guess.setCypherPair(guessChars[0], gcp.getCypherPair().getFrom());
-              }
-            } else if (Character.isAlphabetic(guessChars[1])) {
-              GameCypherPair gcp = gameCypherPairRepository.findGameCypherPairByGameKeyAndFromCp(gameKey, guessChars[1]).orElseThrow();
+            } else {
+              GameCypherPair gcp = gameCypherPairRepository.findGameCypherPairByGameKeyAndToCp(
+                  gameKey, guessChars[0]).orElseThrow();
               gcp.setHint(true);
               gameCypherPairRepository.save(gcp);
-              guess.setCypherPair(gcp.getCypherPair().getTo(), guessChars[1]);
-            } else {
-              setRandomHints(game, 1);
+              guess.setCypherPair(guessChars[0], gcp.getCypherPair().getFrom());
             }
+          } else if (Character.isAlphabetic(guessChars[1])) {
+            GameCypherPair gcp = gameCypherPairRepository.findGameCypherPairByGameKeyAndFromCp(
+                gameKey, guessChars[1]).orElseThrow();
+            gcp.setHint(true);
+            gameCypherPairRepository.save(gcp);
+            guess.setCypherPair(gcp.getCypherPair().getTo(), guessChars[1]);
+          } else {
+            setRandomHints(game, 1);
           }
           return guessRepository.save(guess);
         })
         .orElseThrow();
     game.setDecodedQuote(DecodeCypher(game));
+    if(game.isSolved()) {
+      game.setSolved();
+    }
     return gameRepository.save(game);
   }
 
@@ -206,10 +200,10 @@ public class GameService implements AbstractGameService {
         .codePoints()
         .forEach((cp) -> {
               if (Character.isAlphabetic(cp)) {
-                Guess cypherGuess = guessRepository.findByGameKeyAndFromChar(gameKey, cp)
-                    .orElse(null);
-                if (cypherGuess != null) {
-                  decodedText.append(Character.toChars(cypherGuess.getCypherPair().getTo()));
+                List<Guess> cypherGuesses = guessRepository.findByGameKeyAndFromChar(gameKey, cp);
+                if (!cypherGuesses.isEmpty()) {
+                  decodedText.append(
+                      Character.toChars(cypherGuesses.getLast().getCypherPair().getTo()));
                 } else {
                   decodedText.append(ENCODED_CHAR);
                 }

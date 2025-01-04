@@ -22,7 +22,7 @@ public interface GuessRepository extends JpaRepository<Guess, Long> {
       + "JOIN gs.game AS gm "
       + "WHERE gm.key = :gameKey "
       + "AND gs.cypherPair.from = :from_char")
-  Optional<Guess> findByGameKeyAndFromChar(UUID gameKey, int from_char);
+  List<Guess> findByGameKeyAndFromChar(UUID gameKey, int from_char);
 
   List<Guess> findByGameKey(UUID gameKey);
 }
