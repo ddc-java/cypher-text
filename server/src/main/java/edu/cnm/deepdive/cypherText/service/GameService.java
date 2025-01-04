@@ -115,14 +115,14 @@ public class GameService implements AbstractGameService {
               gameCypherPairRepository.save(gcp);
               guess.setCypherPair(guessChars[0], gcp.getCypherPair().getFrom());
             }
-          } else if (Character.isAlphabetic(guessChars[1])) {
+          } else if (guessChars.length == 1 || guessChars[1] == HINT_CHAR_CP) {
+            setRandomHints(game, 1);
+          } else {
             GameCypherPair gcp = gameCypherPairRepository.findGameCypherPairByGameKeyAndFromCp(
                 gameKey, guessChars[1]).orElseThrow();
             gcp.setHint(true);
             gameCypherPairRepository.save(gcp);
             guess.setCypherPair(gcp.getCypherPair().getTo(), guessChars[1]);
-          } else {
-            setRandomHints(game, 1);
           }
           return guessRepository.save(guess);
         })
