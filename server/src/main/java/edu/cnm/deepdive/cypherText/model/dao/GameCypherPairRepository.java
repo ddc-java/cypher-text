@@ -20,4 +20,6 @@ public interface GameCypherPairRepository extends JpaRepository<GameCypherPair, 
   Optional<GameCypherPair> findGameCypherPairByGameKeyAndToCp(UUID game_key, int to_cp);
 
   Optional<GameCypherPair> findGameCypherPairByGameKeyAndId(UUID game_key, Long gcp_id);
+
+  List<GameCypherPair> findGameCypherPairByGameKey(UUID game_key);
 }

@@ -235,13 +235,14 @@ public class GameService implements AbstractGameService {
   private void setRandomHints(Game gameToPlay, int initialHintNum) {
     int quoteLength = gameToPlay.getQuote().getQuoteText().length();
     int hintLimit = (initialHintNum >= quoteLength) ? quoteLength - 1 : initialHintNum;
+    List<GameCypherPair> gcps = gameCypherPairRepository
+        .findGameCypherPairByGameKey(gameToPlay.getKey());
+    GameCypherPair[] gcpArray = gcps.toArray(new GameCypherPair[gcps.size()]);
     for (int hintNum = 0; hintNum < hintLimit; hintNum++) {
       GameCypherPair gcp;
       do {
-        long hintLoc = rng.nextLong(gameCypher.size() + 1);
-        gcp = gameCypherPairRepository
-            .findGameCypherPairByGameKeyAndId(gameToPlay.getKey(), hintLoc)
-            .orElseThrow();
+        int hintLoc = rng.nextInt(gcps.size());
+        gcp = gcpArray[hintLoc];
       } while (gcp.isHint());
       gcp.setHint(true);
       gameCypherPairRepository.save(gcp);
