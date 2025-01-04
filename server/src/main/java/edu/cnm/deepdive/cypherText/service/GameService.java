@@ -60,6 +60,8 @@ public class GameService implements AbstractGameService {
       int quotesLength = quoteRepository.findAll().size();
       gameToPlay = game;
       gameToPlay.setUser(user);
+      gameToPlay.setNumMoves(0);
+      gameToPlay.setNumHints(game.getInitialHints());
 
       long quoteId = rng.nextLong(quotesLength);
       Quote quoteById = quoteRepository.findQuoteById(quoteId);
@@ -128,6 +130,8 @@ public class GameService implements AbstractGameService {
         })
         .orElseThrow();
     game.setDecodedQuote(DecodeCypher(game));
+    game.setNumHints(gameCypherPairRepository.findGameCypherPairHints(game.getKey()).size());
+    game.setNumMoves(guessRepository.findByGameKey(game.getKey()).size());
     if(game.isSolved()) {
       game.setSolved();
     }
@@ -233,15 +237,12 @@ public class GameService implements AbstractGameService {
   }
 
   private void setRandomHints(Game gameToPlay, int initialHintNum) {
-    int quoteLength = gameToPlay.getQuote().getQuoteText().length();
-    int hintLimit = (initialHintNum >= quoteLength) ? quoteLength - 1 : initialHintNum;
-    List<GameCypherPair> gcps = gameCypherPairRepository
-        .findGameCypherPairByGameKey(gameToPlay.getKey());
-    GameCypherPair[] gcpArray = gcps.toArray(new GameCypherPair[gcps.size()]);
+    GameCypherPair[] gcpArray = gameCypherPairRepository.findGameCypherPairByGameKey(gameToPlay.getKey()).toArray(new GameCypherPair[0]);
+    int hintLimit = (initialHintNum >= gcpArray.length) ? gcpArray.length -1 : initialHintNum;
     for (int hintNum = 0; hintNum < hintLimit; hintNum++) {
       GameCypherPair gcp;
       do {
-        int hintLoc = rng.nextInt(gcps.size());
+        int hintLoc = rng.nextInt(gcpArray.length);
         gcp = gcpArray[hintLoc];
       } while (gcp.isHint());
       gcp.setHint(true);

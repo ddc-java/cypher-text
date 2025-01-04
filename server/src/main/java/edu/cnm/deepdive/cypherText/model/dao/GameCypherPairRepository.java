@@ -22,4 +22,7 @@ public interface GameCypherPairRepository extends JpaRepository<GameCypherPair, 
   Optional<GameCypherPair> findGameCypherPairByGameKeyAndId(UUID game_key, Long gcp_id);
 
   List<GameCypherPair> findGameCypherPairByGameKey(UUID game_key);
+
+  @Query("SELECT gcp FROM GameCypherPair AS gcp WHERE gcp.hint = true AND gcp.game.key = :game_key")
+  List<GameCypherPair> findGameCypherPairHints(UUID game_key);
 }

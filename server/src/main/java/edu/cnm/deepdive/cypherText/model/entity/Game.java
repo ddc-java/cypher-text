@@ -66,9 +66,11 @@ public class Game {
   private final List<GameCypherPair> gameCypher = new LinkedList<>();
 
   @Column(nullable = false, updatable = false)
-//  @Min(0)
-//  @Max(3)
   private int initialHints;
+
+  private int numMoves;
+
+  private int numHints;
 
   private boolean solved;
 
@@ -139,6 +141,14 @@ public class Game {
 
   public void setSolved() {
     this.solved = true;
+  }
+
+  public void setNumMoves(int numMoves) {
+    this.numMoves = numMoves;
+  }
+
+  public void setNumHints(int numHints) {
+    this.numHints = numHints;
   }
 
   @PrePersist
