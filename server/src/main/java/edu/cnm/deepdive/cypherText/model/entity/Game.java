@@ -143,8 +143,16 @@ public class Game {
     this.solved = true;
   }
 
+  public int getNumMoves() {
+    return numMoves;
+  }
+
   public void setNumMoves(int numMoves) {
     this.numMoves = numMoves;
+  }
+
+  public int getNumHints() {
+    return numHints;
   }
 
   public void setNumHints(int numHints) {

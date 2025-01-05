@@ -110,12 +110,14 @@ public class GameService implements AbstractGameService {
           if (Character.isAlphabetic(guessChars[0])) {
             if (Character.isAlphabetic(guessChars[1])) {
               guess.setCypherPair(guessChars[0], guessChars[1]);
+              return guessRepository.save(guess);
             } else {
               GameCypherPair gcp = gameCypherPairRepository.findGameCypherPairByGameKeyAndToCp(
                   gameKey, guessChars[0]).orElseThrow();
               gcp.setHint(true);
               gameCypherPairRepository.save(gcp);
               guess.setCypherPair(guessChars[0], gcp.getCypherPair().getFrom());
+              return guessRepository.save(guess);
             }
           } else if (guessChars.length == 1 || guessChars[1] == HINT_CHAR_CP) {
             setRandomHints(game, 1);
@@ -125,8 +127,9 @@ public class GameService implements AbstractGameService {
             gcp.setHint(true);
             gameCypherPairRepository.save(gcp);
             guess.setCypherPair(gcp.getCypherPair().getTo(), guessChars[1]);
+            return guessRepository.save(guess);
           }
-          return guessRepository.save(guess);
+          return gm;
         })
         .orElseThrow();
     game.setDecodedQuote(DecodeCypher(game));
