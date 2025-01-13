@@ -50,7 +50,7 @@ public class GameService implements AbstractGameService {
 
   @Override
   public Game startOrGetGame(Game game, User user) {
-    // TODO: 12/24/2024 Add initial number of hints
+    // TODO: 1/10/2025 Allow user to choose hint character
     List<Game> currentGames = gameRepository.findCurrentGames(user);
     Game gameToPlay;
 
