@@ -94,7 +94,9 @@ public class GameService implements AbstractGameService {
     gameRepository
         .findGameByKeyAndUser(gameKey, user)
         .map((gm) -> {
-          // TODO: 12/24/2024 Check if game solved
+          if(gm.isSolved()){
+            throw new GameAlreadySolvedException("Game is already solved");
+          }
           Integer[] guessChars = guessDto.getGuessText()
               .toUpperCase()
               .codePoints()
