@@ -175,6 +175,7 @@ public class GameService implements AbstractGameService {
     for (int destIndex = gameCypher.length - 1; destIndex >= 0; destIndex--) {
       do {
         srcIndex = rng.nextInt(destIndex + 1);
+        // TODO: 2/24/2025 If last letter has not changed position, change it with another position.
       } while (gameCypher[srcIndex] == ALPHABET_CP_ARRAY[destIndex]);
       tempValue = gameCypher[srcIndex];
       gameCypher[srcIndex] = gameCypher[destIndex];
