@@ -1,16 +1,12 @@
 package edu.cnm.deepdive.cyphertext.viewmodel;
 
 import android.util.Log;
-import androidx.lifecycle.DefaultLifecycleObserver;
-import androidx.lifecycle.LifecycleOwner;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import dagger.hilt.android.lifecycle.HiltViewModel;
 import edu.cnm.deepdive.cyphertext.model.entity.Game;
 import edu.cnm.deepdive.cyphertext.service.CypherTextRepository;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
 
 @HiltViewModel
 public class CypherTextViewModel {
@@ -40,15 +36,6 @@ public class CypherTextViewModel {
             pending
         );
   }
-
-  public LiveData<Game> getGame() {
-    return game;
-  }
-
-  public LiveData<Throwable> getThrowable() {
-    return throwable;
-  }
-
 
   private void postThrowable(Throwable throwable) {
     Log.e(TAG, throwable.getMessage(), throwable);
