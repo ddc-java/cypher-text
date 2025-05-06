@@ -27,17 +27,20 @@
 
     <argument
       android:name="permissions_to_explain"
-      app:argType="string[]"/>
+      app:argType="string[]"
+      />
     <argument
       android:name="permissions_to_request"
-      app:argType="string[]"/>
+      app:argType="string[]"
+      />
 
   </action>
 
   <fragment
     android:id="@+id/navigation_sign_in_demo"
     android:name="edu.cnm.deepdive.cyphertext.controller.DemoFragment"
-    tools:layout="@layout/fragment_demo"/>
+    tools:layout="@layout/fragment_demo"
+    />
 
   <dialog
     android:id="@+id/navigation_permissions_explanation"
@@ -45,10 +48,12 @@
 
     <argument
       android:name="permissions_to_explain"
-      app:argType="string[]"/>
+      app:argType="string[]"
+      />
     <argument
       android:name="permissions_to_request"
-      app:argType="string[]"/>
+      app:argType="string[]"
+      />
 
   </dialog>
 

@@ -4,7 +4,7 @@ public class Game {
 
   private final String id;
 
-  private final String encodedQuote;
+  private String encodedQuote;
 
   private final int initialHints;
 
@@ -12,9 +12,8 @@ public class Game {
 
   private boolean solved;
 
-  public Game(String encodedQuote, int initialHints) {
+  public Game(int initialHints) {
     id = null;
-    this.encodedQuote = encodedQuote;
     this.initialHints = initialHints;
   }
 }
