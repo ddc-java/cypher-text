@@ -52,7 +52,7 @@ import java.util.stream.Collectors;
  * altogether.
  */
 @AndroidEntryPoint
-public class DemoFragment extends Fragment {
+public class IntroFragment extends Fragment {
 
   private static final Pattern PERMISSION_NAME_PATTERN = Pattern.compile("(?<=\\.)[^.]*$");
 

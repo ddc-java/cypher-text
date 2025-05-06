@@ -38,8 +38,8 @@
 
   <fragment
     android:id="@+id/navigation_sign_in_demo"
-    android:name="edu.cnm.deepdive.cyphertext.controller.DemoFragment"
-    tools:layout="@layout/fragment_demo"
+    android:name="edu.cnm.deepdive.cyphertext.controller.IntroFragment"
+    tools:layout="@layout/fragment_intro"
     />
 
   <dialog
