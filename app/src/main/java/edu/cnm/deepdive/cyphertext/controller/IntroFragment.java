@@ -28,6 +28,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import dagger.hilt.android.AndroidEntryPoint;
 import edu.cnm.deepdive.cyphertext.R;
@@ -75,19 +77,20 @@ public class IntroFragment extends Fragment {
     //noinspection DataFlowIssue
     loadColors(context);
     binding = FragmentIntroBinding.inflate(inflater, container, false);
-    setupUI();
     return binding.getRoot();
   }
 
   @Override
   public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
+    NavController navController = Navigation.findNavController(view);
     ViewModelProvider provider = new ViewModelProvider(requireActivity());
     LifecycleOwner owner = getViewLifecycleOwner();
     setupLoginViewModel(provider, owner);
     setupUserViewModel(provider, owner);
     setupPermissionsViewModel(provider, owner);
     setupPreferencesViewModel(provider, owner);
+    binding.playButtonId.setOnClickListener((v) -> navController.navigate(IntroFragmentDirections.));
   }
 
   @Override
@@ -103,7 +106,6 @@ public class IntroFragment extends Fragment {
   }
 
   private void setupUI() {
-    binding.playButtonId.setOnClickListener();
   }
 
   private void setupLoginViewModel(ViewModelProvider provider, LifecycleOwner owner) {
