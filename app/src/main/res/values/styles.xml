@@ -16,7 +16,11 @@
 -->
 <resources>
   <!-- Base application theme. -->
-  <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+  <style name="CypherTextView" parent="TextAppearance.Material3.HeadlineLarge">
+    <item name="android:fontFamily">monospace</item>
+  </style>
+
+  <style name="AppTheme" parent="Theme.Material3.DayNight">
     <!-- Customize your theme here. -->
     <item name="colorPrimary">@color/primary_color</item>
     <item name="colorPrimaryDark">@color/primary_color_dark</item>

@@ -32,6 +32,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import dagger.hilt.android.AndroidEntryPoint;
 import edu.cnm.deepdive.cyphertext.R;
 import edu.cnm.deepdive.cyphertext.databinding.FragmentDemoBinding;
+import edu.cnm.deepdive.cyphertext.databinding.FragmentIntroBinding;
 import edu.cnm.deepdive.cyphertext.model.entity.User;
 import edu.cnm.deepdive.cyphertext.viewmodel.LoginViewModel;
 import edu.cnm.deepdive.cyphertext.viewmodel.PermissionsViewModel;
@@ -56,7 +57,7 @@ public class IntroFragment extends Fragment {
 
   private static final Pattern PERMISSION_NAME_PATTERN = Pattern.compile("(?<=\\.)[^.]*$");
 
-  private FragmentDemoBinding binding;
+  private FragmentIntroBinding binding;
   private UserViewModel userViewModel;
   private User user;
   @ColorInt
@@ -73,7 +74,7 @@ public class IntroFragment extends Fragment {
     Context context = getContext();
     //noinspection DataFlowIssue
     loadColors(context);
-    binding = FragmentDemoBinding.inflate(inflater, container, false);
+    binding = FragmentIntroBinding.inflate(inflater, container, false);
     setupUI();
     return binding.getRoot();
   }
@@ -102,9 +103,7 @@ public class IntroFragment extends Fragment {
   }
 
   private void setupUI() {
-    binding.localDisplayName.addTextChangedListener(new DisplayNameWatcher());
-    binding.save.setOnClickListener((v) -> saveChanges());
-    binding.cancel.setOnClickListener((v) -> cancelChanges());
+    binding.playButtonId.setOnClickListener();
   }
 
   private void setupLoginViewModel(ViewModelProvider provider, LifecycleOwner owner) {
