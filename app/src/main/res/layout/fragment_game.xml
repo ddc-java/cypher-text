@@ -38,5 +38,66 @@
     android:lineHeight="45dp"
     android:text="THIS IS A NEW VIEW THIS IS A NEW VIEW THIS IS A NEW VIEW THIS IS A NEW VIEW THIS IS A NEW VIEW THIS IS A NEW VIEW THIS IS A NEW VIEW "/>
 
+  <com.google.android.material.textview.MaterialTextView
+    android:id="@+id/encoded_label_id"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    app:layout_constraintTop_toBottomOf="@id/top_guide_id"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toStartOf="@id/decoded_char_id"
+    android:text="Encoded Character"
+    />
+
+  <com.google.android.material.textview.MaterialTextView
+    android:id="@+id/decoded_label_id"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    app:layout_constraintTop_toTopOf="@id/encoded_label_id"
+    app:layout_constraintStart_toEndOf="@id/encoded_char_id"
+    app:layout_constraintEnd_toEndOf="parent"
+    android:text="Decoded Character"
+    />
+
+  <com.google.android.material.textfield.TextInputEditText
+    android:id="@+id/encoded_char_id"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    app:layout_constraintTop_toBottomOf="@id/encoded_label_id"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toStartOf="@id/decoded_char_id"
+    android:inputType="textCapCharacters"
+    android:maxLength="1"
+    />
+
+  <com.google.android.material.textfield.TextInputEditText
+    android:id="@+id/decoded_char_id"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    app:layout_constraintTop_toTopOf="@id/encoded_char_id"
+    app:layout_constraintStart_toEndOf="@id/encoded_char_id"
+    app:layout_constraintEnd_toEndOf="parent"
+    android:inputType="textCapCharacters"
+    android:maxLength="1"
+    />
+
+  <androidx.constraintlayout.widget.Guideline
+    android:id="@+id/bottom_guide_id"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    app:layout_constraintGuide_percent=".5"
+    />
+
+  <Button
+    android:id="@+id/decode_button_id"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    app:layout_constraintBottom_toTopOf="@id/bottom_guide_id"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    android:text="DECODE"
+    />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
 
