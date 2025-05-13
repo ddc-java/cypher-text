@@ -1,6 +1,7 @@
 package edu.cnm.deepdive.cyphertext.service;
 
 import edu.cnm.deepdive.cyphertext.model.entity.Game;
+import edu.cnm.deepdive.cyphertext.model.entity.Guess;
 import io.reactivex.rxjava3.core.Scheduler;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.schedulers.Schedulers;
@@ -37,6 +38,14 @@ public class CypherTextRepository {
         .observeOn(scheduler)
         .flatMap((token) -> proxy.getGame(id, token))
         .doOnSuccess(this::setGame);
+  }
+
+  public Single<Game> submitGuess(Guess guess) {
+    return signInService
+        .refreshBearerToken()
+        .observeOn(scheduler)
+        .flatMap((token) -> proxy.submitGuess(game.getId(), guess, token))
+        .subscribeOn(scheduler);
   }
 
   public Game getGame() {

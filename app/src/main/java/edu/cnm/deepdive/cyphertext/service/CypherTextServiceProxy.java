@@ -38,7 +38,7 @@ public interface CypherTextServiceProxy {
       @Header("Authorization") String bearerToken);
 
   @POST("games/{id}/guesses")
-  Single<Guess> submitGuess(
+  Single<Game> submitGuess(
       @Path("id") String gameId,
       @Body Guess guess,
       @Header("Authorization") String bearerToken);

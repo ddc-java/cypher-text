@@ -9,9 +9,10 @@ public class Guess {
   @Expose
   private final String id;
 
+  @Expose
   private final String guessText;
 
-  Guess(String guessText) {
+  public Guess(String guessText) {
     id = null;
     this.guessText = guessText;
   }

@@ -26,6 +26,10 @@ public class Game {
     this.initialHints = initialHints;
   }
 
+  public String getId() {
+    return id;
+  }
+
   public String getEncodedQuote() {
     return encodedQuote;
   }

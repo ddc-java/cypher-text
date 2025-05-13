@@ -34,7 +34,7 @@
     app:layout_constraintVertical_chainStyle="packed"
     android:fontFamily="monospace"
     android:textSize="30dp"
-    android:text="CYPHER TEXT"
+    android:text="CYPH_R T_XT"
     />
 
   <com.google.android.material.textview.MaterialTextView

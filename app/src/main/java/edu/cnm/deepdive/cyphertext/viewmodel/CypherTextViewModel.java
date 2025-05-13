@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import dagger.hilt.android.lifecycle.HiltViewModel;
 import edu.cnm.deepdive.cyphertext.model.entity.Game;
+import edu.cnm.deepdive.cyphertext.model.entity.Guess;
 import edu.cnm.deepdive.cyphertext.service.CypherTextRepository;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import javax.inject.Inject;
@@ -35,6 +36,18 @@ public class CypherTextViewModel extends ViewModel implements DefaultLifecycleOb
         .startGame(game)
         .subscribe(
             this.game::postValue,
+            this::postThrowable,
+            pending
+        );
+  }
+
+  public void submitGuess(String guessText) {
+    throwable.setValue(null);
+    Guess guess = new Guess(guessText);
+    cypherTextRepository
+        .submitGuess(guess)
+        .subscribe(
+            game::postValue,
             this::postThrowable,
             pending
         );

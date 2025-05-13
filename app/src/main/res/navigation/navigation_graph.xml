@@ -51,7 +51,19 @@
   <fragment
     android:id="@+id/navigation_game"
     android:name="edu.cnm.deepdive.cyphertext.controller.GameFragment"
-    tools:layout="@layout/fragment_game"/>
+    tools:layout="@layout/fragment_game">
+
+    <action
+      android:id="@+id/navigate_dialog"
+      app:destination="@+id/navigation_end_game_dialog"
+      />
+
+  </fragment>
+
+  <dialog
+    android:id="@+id/navigation_end_game_dialog"
+    android:name="edu.cnm.deepdive.cyphertext.controller.EndGameDialogFragment"
+    />
 
   <dialog
     android:id="@+id/navigation_permissions_explanation"
