@@ -17,8 +17,6 @@ package edu.cnm.deepdive.cyphertext.controller;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,18 +31,15 @@ import androidx.navigation.Navigation;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import dagger.hilt.android.AndroidEntryPoint;
 import edu.cnm.deepdive.cyphertext.R;
-import edu.cnm.deepdive.cyphertext.databinding.FragmentDemoBinding;
 import edu.cnm.deepdive.cyphertext.databinding.FragmentIntroBinding;
 import edu.cnm.deepdive.cyphertext.model.entity.User;
+import edu.cnm.deepdive.cyphertext.viewmodel.CypherTextViewModel;
 import edu.cnm.deepdive.cyphertext.viewmodel.LoginViewModel;
 import edu.cnm.deepdive.cyphertext.viewmodel.PermissionsViewModel;
 import edu.cnm.deepdive.cyphertext.viewmodel.PreferencesViewModel;
 import edu.cnm.deepdive.cyphertext.viewmodel.UserViewModel;
-import java.util.Objects;
 import java.util.Set;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 /**
  * Demonstrates access to and observation of {@link androidx.lifecycle.LiveData} elements in
@@ -61,6 +56,7 @@ public class IntroFragment extends Fragment {
 
   private FragmentIntroBinding binding;
   private UserViewModel userViewModel;
+  private CypherTextViewModel cypherTextViewModel;
   private User user;
   @ColorInt
   private int saveColor;
@@ -83,14 +79,12 @@ public class IntroFragment extends Fragment {
   @Override
   public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
+    setupViewModels();
     NavController navController = Navigation.findNavController(view);
-    ViewModelProvider provider = new ViewModelProvider(requireActivity());
-    LifecycleOwner owner = getViewLifecycleOwner();
-    setupLoginViewModel(provider, owner);
-    setupUserViewModel(provider, owner);
-    setupPermissionsViewModel(provider, owner);
-    setupPreferencesViewModel(provider, owner);
-    binding.playButtonId.setOnClickListener((v) -> navController.navigate(IntroFragmentDirections.));
+    binding.playButtonId.setOnClickListener((v) -> {
+      cypherTextViewModel.startGame();
+      navController.navigate(IntroFragmentDirections.navigationPlayGame());
+    });
   }
 
   @Override
@@ -105,7 +99,14 @@ public class IntroFragment extends Fragment {
     disabledColor = context.getColor(R.color.disabled);
   }
 
-  private void setupUI() {
+  private void setupViewModels() {
+    ViewModelProvider provider = new ViewModelProvider(requireActivity());
+    LifecycleOwner owner = getViewLifecycleOwner();
+    setupLoginViewModel(provider, owner);
+    setupUserViewModel(provider, owner);
+    setupPermissionsViewModel(provider, owner);
+    setupPreferencesViewModel(provider, owner);
+    setupCypherTextViewModel(provider, owner);
   }
 
   private void setupLoginViewModel(ViewModelProvider provider, LifecycleOwner owner) {
@@ -136,100 +137,106 @@ public class IntroFragment extends Fragment {
         .observe(owner, this::handleSelectableTextPreference);
   }
 
+  private void setupCypherTextViewModel(ViewModelProvider provider, LifecycleOwner owner) {
+    cypherTextViewModel = provider.get(CypherTextViewModel.class);
+//    cypherTextViewModel
+//        .startGame();  // FIXME: 5/8/2025 This isn't correct
+  }
+
   private void handleAccount(GoogleSignInAccount account) {
-    if (account != null) {
-      binding.googleDisplayName.setText(account.getDisplayName());
-      if (account.getIdToken() != null && !account.getIdToken().isEmpty()) {
-        binding.bearerToken.setText(account.getIdToken());
-        binding.bearerTokenLayout.setVisibility(View.VISIBLE);
-      } else {
-        binding.bearerTokenLayout.setVisibility(View.GONE);
-      }
-    }
+//    if (account != null) {
+//      binding.googleDisplayName.setText(account.getDisplayName());
+//      if (account.getIdToken() != null && !account.getIdToken().isEmpty()) {
+//        binding.bearerToken.setText(account.getIdToken());
+//        binding.bearerTokenLayout.setVisibility(View.VISIBLE);
+//      } else {
+//        binding.bearerTokenLayout.setVisibility(View.GONE);
+//      }
+//    }
   }
 
   private void handleUser(User user) {
-    this.user = user;
-    binding.localDisplayName.setText(user.getDisplayName());
-    checkSaveConditions();
+//    this.user = user;
+//    binding.localDisplayName.setText(user.getDisplayName());
+//    checkSaveConditions();
   }
 
   private void handlePermissions(Set<String> permissions) {
-    binding.permissions.setText(
-        permissions
-            .stream()
-            .map(PERMISSION_NAME_PATTERN::matcher)
-            .filter(Matcher::find)
-            .map(Matcher::group)
-            .collect(Collectors.joining(", "))
-    );
+//    binding.permissions.setText(
+//        permissions
+//            .stream()
+//            .map(PERMISSION_NAME_PATTERN::matcher)
+//            .filter(Matcher::find)
+//            .map(Matcher::group)
+//            .collect(Collectors.joining(", "))
+//    );
   }
 
   private void handleSelectableTextPreference(Boolean selectable) {
-    if (selectable) {
-      binding.googleDisplayName.setEnabled(true);
-      binding.googleDisplayName.setTextIsSelectable(true);
-      binding.bearerToken.setEnabled(true);
-      binding.googleDisplayName.setTextIsSelectable(true);
-      binding.permissions.setEnabled(true);
-      binding.permissions.setTextIsSelectable(true);
-    } else {
-      binding.googleDisplayName.setEnabled(false);
-      binding.googleDisplayName.setTextIsSelectable(false);
-      binding.bearerToken.setEnabled(false);
-      binding.googleDisplayName.setTextIsSelectable(false);
-      binding.permissions.setEnabled(false);
-      binding.permissions.setTextIsSelectable(false);
-    }
+//    if (selectable) {
+//      binding.googleDisplayName.setEnabled(true);
+//      binding.googleDisplayName.setTextIsSelectable(true);
+//      binding.bearerToken.setEnabled(true);
+//      binding.googleDisplayName.setTextIsSelectable(true);
+//      binding.permissions.setEnabled(true);
+//      binding.permissions.setTextIsSelectable(true);
+//    } else {
+//      binding.googleDisplayName.setEnabled(false);
+//      binding.googleDisplayName.setTextIsSelectable(false);
+//      binding.bearerToken.setEnabled(false);
+//      binding.googleDisplayName.setTextIsSelectable(false);
+//      binding.permissions.setEnabled(false);
+//      binding.permissions.setTextIsSelectable(false);
+//    }
   }
 
   private void checkSaveConditions() {
-    String input = Objects.requireNonNull(binding.localDisplayName.getText())
-        .toString()
-        .trim();
-    if (user != null
-        && !input.isEmpty()
-        && !input.equals(user.getDisplayName())
-    ) {
-      binding.save.setColorFilter(saveColor);
-      binding.save.setEnabled(true);
-      binding.cancel.setColorFilter(cancelColor);
-      binding.cancel.setEnabled(true);
-    } else {
-      binding.save.setColorFilter(disabledColor);
-      binding.save.setEnabled(false);
-      binding.cancel.setColorFilter(disabledColor);
-      binding.cancel.setEnabled(false);
-    }
+//    String input = Objects.requireNonNull(binding.localDisplayName.getText())
+//        .toString()
+//        .trim();
+//    if (user != null
+//        && !input.isEmpty()
+//        && !input.equals(user.getDisplayName())
+//    ) {
+//      binding.save.setColorFilter(saveColor);
+//      binding.save.setEnabled(true);
+//      binding.cancel.setColorFilter(cancelColor);
+//      binding.cancel.setEnabled(true);
+//    } else {
+//      binding.save.setColorFilter(disabledColor);
+//      binding.save.setEnabled(false);
+//      binding.cancel.setColorFilter(disabledColor);
+//      binding.cancel.setEnabled(false);
+//    }
   }
 
-  private void saveChanges() {
-    user.setDisplayName(
-        Objects.requireNonNull(binding.localDisplayName.getText()).toString().trim());
-    userViewModel.save(user);
-  }
+//  private void saveChanges() {
+//    user.setDisplayName(
+//        Objects.requireNonNull(binding.localDisplayName.getText()).toString().trim());
+//    userViewModel.save(user);
+//  }
 
-  private void cancelChanges() {
-    binding.localDisplayName.setText(user.getDisplayName());
-  }
+//  private void cancelChanges() {
+//    binding.localDisplayName.setText(user.getDisplayName());
+//  }
 
-  private class DisplayNameWatcher implements TextWatcher {
-
-    @Override
-    public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
-      // Intentionally left empty; no action required.
-    }
-
-    @Override
-    public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
-      // Intentionally left empty; no action required.
-    }
-
-    @Override
-    public void afterTextChanged(Editable editable) {
-      checkSaveConditions();
-    }
-
-  }
+//  private class DisplayNameWatcher implements TextWatcher {
+//
+//    @Override
+//    public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
+//      // Intentionally left empty; no action required.
+//    }
+//
+//    @Override
+//    public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+//      // Intentionally left empty; no action required.
+//    }
+//
+//    @Override
+//    public void afterTextChanged(Editable editable) {
+//      checkSaveConditions();
+//    }
+//
+//  }
 
 }

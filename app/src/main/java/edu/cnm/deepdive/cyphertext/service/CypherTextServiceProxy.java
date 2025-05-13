@@ -28,7 +28,7 @@ import retrofit2.http.Path;
 public interface CypherTextServiceProxy {
 
   @POST("games")
-  Single<Game> startOrGetGame(
+  Single<Game> startGame(
     @Body Game game,
     @Header("Authorization") String bearerToken);
 

@@ -26,7 +26,7 @@
     app:layout_constraintBottom_toTopOf="@id/top_guide_id"
     android:fontFamily="monospace"
     android:lineHeight="45dp"
-    android:text="ABCD CD E FGH ICGH ABCD CD E FGH ICGH ABCD CD E FGH ICGH ABCD CD E FGH ICGH ABCD CD E FGH ICGH ABCD CD E FGH ICGH ABCD CD E FGH ICGH "/>
+    tools:text="ABCD CD E FGH ICGH ABCD CD E FGH ICGH ABCD CD E FGH ICGH ABCD CD E FGH ICGH ABCD CD E FGH ICGH ABCD CD E FGH ICGH ABCD CD E FGH ICGH "/>
 
   <TextView
     android:id="@+id/decoded_view_id"
@@ -36,7 +36,7 @@
     app:layout_constraintStart_toStartOf="@id/encoded_view_id"
     android:fontFamily="monospace"
     android:lineHeight="45dp"
-    android:text="THIS IS A NEW VIEW THIS IS A NEW VIEW THIS IS A NEW VIEW THIS IS A NEW VIEW THIS IS A NEW VIEW THIS IS A NEW VIEW THIS IS A NEW VIEW "/>
+    tools:text="THIS IS A NEW VIEW THIS IS A NEW VIEW THIS IS A NEW VIEW THIS IS A NEW VIEW THIS IS A NEW VIEW THIS IS A NEW VIEW THIS IS A NEW VIEW "/>
 
   <com.google.android.material.textview.MaterialTextView
     android:id="@+id/encoded_label_id"

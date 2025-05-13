@@ -1,7 +1,10 @@
 package edu.cnm.deepdive.cyphertext.viewmodel;
 
 import android.util.Log;
+import androidx.lifecycle.DefaultLifecycleObserver;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModel;
 import dagger.hilt.android.lifecycle.HiltViewModel;
 import edu.cnm.deepdive.cyphertext.model.entity.Game;
 import edu.cnm.deepdive.cyphertext.service.CypherTextRepository;
@@ -9,7 +12,7 @@ import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import javax.inject.Inject;
 
 @HiltViewModel
-public class CypherTextViewModel {
+public class CypherTextViewModel extends ViewModel implements DefaultLifecycleObserver {
 
   private static final String TAG = CypherTextViewModel.class.getSimpleName();
   private final CypherTextRepository cypherTextRepository;
@@ -25,16 +28,20 @@ public class CypherTextViewModel {
     pending = new CompositeDisposable();
   }
 
-  public void startOrGetGame() {
+  public void startGame() {
     throwable.setValue(null);
     Game game = new Game(0);  // FIXME: 5/6/2025 Get initial hints from preferences
     cypherTextRepository
-        .startOrGetGame(game)
+        .startGame(game)
         .subscribe(
             this.game::postValue,
             this::postThrowable,
             pending
         );
+  }
+
+  public LiveData<Game> getGame() {
+    return game;
   }
 
   private void postThrowable(Throwable throwable) {

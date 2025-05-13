@@ -2,7 +2,7 @@ server:
   error:
     include-message: always
   forward-headers-strategy: framework
-  port: 8080
+  port: 18182
   servlet:
     context-path: /cypher-text
 
