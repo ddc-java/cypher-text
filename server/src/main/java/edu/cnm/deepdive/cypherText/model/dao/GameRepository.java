@@ -1,6 +1,7 @@
 package edu.cnm.deepdive.cypherText.model.dao;
 
 import edu.cnm.deepdive.cypherText.model.entity.Game;
+import edu.cnm.deepdive.cypherText.model.entity.Quote;
 import edu.cnm.deepdive.cypherText.model.entity.User;
 import java.util.List;
 import java.util.Optional;
@@ -14,7 +15,7 @@ public interface GameRepository extends JpaRepository<Game, Long> {
 
   List<Game> findGamesByUser(User user);
 
-  @Query("SELECT g FROM Game as g WHERE g.solved = false AND g.user = :user")
+  @Query("SELECT g FROM Game AS g WHERE g.solved = false AND g.user = :user")
   List<Game> findCurrentGames(User user);
 
 

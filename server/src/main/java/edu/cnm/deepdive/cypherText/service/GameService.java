@@ -57,14 +57,12 @@ public class GameService implements AbstractGameService {
     if (!currentGames.isEmpty()) {
       gameToPlay = currentGames.getFirst();
     } else {
-      int quotesLength = quoteRepository.findAll().size();
       gameToPlay = game;
       gameToPlay.setUser(user);
       gameToPlay.setNumMoves(0);
       gameToPlay.setNumHints(game.getInitialHints());
 
-      long quoteId = rng.nextLong(quotesLength);
-      Quote quoteById = quoteRepository.findQuoteById(quoteId);
+      Quote quoteById = quoteRepository.findRandomQuote();
       gameToPlay.setQuote(quoteById);
 
       String textToEncrypt = quoteById.getQuoteText().toUpperCase();
