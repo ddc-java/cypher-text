@@ -67,7 +67,7 @@
     app:layout_constraintTop_toBottomOf="@id/encoded_label_id"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintEnd_toStartOf="@+id/encoded_char_id"
-    android:text="What's this ->"
+    android:text="What's this?"
     />
 
   <com.google.android.material.textfield.TextInputEditText
@@ -83,12 +83,12 @@
 
   <Button
     android:id="@+id/decode_button_id"
-    android:layout_width="wrap_content"
+    android:layout_width="0dp"
     android:layout_height="wrap_content"
     app:layout_constraintTop_toBottomOf="@id/encoded_label_id"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintEnd_toEndOf="parent"
-    android:text="<-Swap->"
+    app:layout_constraintStart_toEndOf="@id/encoded_char_id"
+    app:layout_constraintEnd_toStartOf="@id/decoded_char_id"
+    android:text="Swap"
     />
 
   <com.google.android.material.textfield.TextInputEditText
@@ -109,7 +109,7 @@
     app:layout_constraintTop_toBottomOf="@id/encoded_label_id"
     app:layout_constraintStart_toEndOf="@id/decoded_char_id"
     app:layout_constraintEnd_toEndOf="parent"
-    android:text="<- Any of these?"
+    android:text="Any of these?"
     />
 
   <androidx.constraintlayout.widget.Guideline
@@ -117,7 +117,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    app:layout_constraintGuide_percent=".66"
+    app:layout_constraintGuide_percent="0.62"
     />
 
   <Button

@@ -24,7 +24,7 @@ import edu.cnm.deepdive.cyphertext.viewmodel.CypherTextViewModel;
 @AndroidEntryPoint
 public class GameFragment extends Fragment {
 
-  private static final String SPACE = " ";
+  private static final String EMPTY = "";
   private static final String HINT_CHARACTER = "?";
   private static final String NON_CHAR_COMPARE = "[\\W_]+";
   private FragmentGameBinding binding;
@@ -41,9 +41,6 @@ public class GameFragment extends Fragment {
     super.onCreate(savedInstanceState);
   }
 
-  /**
-   * @noinspection DataFlowIssue
-   */
   @Override
   public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
       Bundle savedInstanceState) {
@@ -57,7 +54,10 @@ public class GameFragment extends Fragment {
         (SimpleTextWatcher) (editable) -> {
         }
     );
-    binding.decodeButtonId.setOnClickListener((v) -> getGuessText());
+    binding.decodeButtonId.setOnClickListener((v) -> submitGuess());
+    binding.specificHintButtonId.setOnClickListener((v) -> getSpecificHint());
+    binding.wofHintButtonId.setOnClickListener((v) -> getWofHint());
+    binding.randomHintButtonId.setOnClickListener((v) -> getRandomHint());
     return binding.getRoot();
   }
 
@@ -82,19 +82,53 @@ public class GameFragment extends Fragment {
     }
   }
 
-  private void getGuessText() {
-    String encodedText = binding.encodedCharId
+  private void submitGuess() {
+    String guessText = getGuessText();
+    viewModel.submitGuess(guessText);
+  }
+
+  private String getGuessText() {
+    String guessText = getEncodedChar() + getDecodedChar();
+    clearChars();
+    return guessText;
+  }
+
+  private void getSpecificHint() {
+    String hintChar = getEncodedChar();
+    clearChars();
+    viewModel.submitGuess(hintChar + HINT_CHARACTER);
+  }
+
+  private void getWofHint() {
+    String hintChar = getDecodedChar();
+    clearChars();
+    viewModel.submitGuess(HINT_CHARACTER + hintChar);
+  }
+
+  private void getRandomHint() {
+    clearChars();
+    viewModel.submitGuess(HINT_CHARACTER + HINT_CHARACTER);
+  }
+
+  /** @noinspection DataFlowIssue*/
+  private String getEncodedChar() {
+    return binding.encodedCharId
         .getText()
         .toString()
-        .replaceAll(NON_CHAR_COMPARE, HINT_CHARACTER);
-    String decodedText = binding.decodedCharId
+        .replaceAll(NON_CHAR_COMPARE, EMPTY);
+  }
+
+  /** @noinspection DataFlowIssue*/
+  private String getDecodedChar() {
+    return binding.decodedCharId
         .getText()
         .toString()
-        .replaceAll(NON_CHAR_COMPARE, HINT_CHARACTER);
-    String guessText = encodedText + decodedText;
+        .replaceAll(NON_CHAR_COMPARE, EMPTY);
+  }
+
+  private void clearChars() {
     binding.encodedCharId.setText("");
     binding.decodedCharId.setText("");
-    viewModel.submitGuess(guessText);
   }
 
   @FunctionalInterface
