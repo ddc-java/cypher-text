@@ -13,7 +13,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    app:layout_constraintGuide_percent="0.33"
+    app:layout_constraintGuide_percent="0.45"
     />
 
   <TextView
@@ -25,6 +25,7 @@
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintBottom_toTopOf="@id/top_guide_id"
     android:fontFamily="monospace"
+    android:textSize="20sp"
     android:lineHeight="45dp"
     tools:text="ABCD CD E FGH ICGH ABCD CD E FGH ICGH ABCD CD E FGH ICGH ABCD CD E FGH ICGH ABCD CD E FGH ICGH ABCD CD E FGH ICGH ABCD CD E FGH ICGH "/>
 
@@ -35,6 +36,7 @@
     app:layout_constraintTop_toTopOf="@id/encoded_view_id"
     app:layout_constraintStart_toStartOf="@id/encoded_view_id"
     android:fontFamily="monospace"
+    android:textSize="20sp"
     android:lineHeight="45dp"
     tools:text="THIS IS A NEW VIEW THIS IS A NEW VIEW THIS IS A NEW VIEW THIS IS A NEW VIEW THIS IS A NEW VIEW THIS IS A NEW VIEW THIS IS A NEW VIEW "/>
 
@@ -60,12 +62,12 @@
 
   <Button
     android:id="@+id/specific_hint_button_id"
-    android:layout_width="wrap_content"
+    android:layout_width="0dp"
     android:layout_height="wrap_content"
     app:layout_constraintTop_toBottomOf="@id/encoded_label_id"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintEnd_toStartOf="@+id/encoded_char_id"
-    android:text="What's this->"
+    android:text="What's this ->"
     />
 
   <com.google.android.material.textfield.TextInputEditText
@@ -86,7 +88,7 @@
     app:layout_constraintTop_toBottomOf="@id/encoded_label_id"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
-    android:text="<- Swap ->"
+    android:text="<-Swap->"
     />
 
   <com.google.android.material.textfield.TextInputEditText
@@ -102,12 +104,12 @@
 
   <Button
     android:id="@+id/wof_hint_button_id"
-    android:layout_width="wrap_content"
+    android:layout_width="0dp"
     android:layout_height="wrap_content"
     app:layout_constraintTop_toBottomOf="@id/encoded_label_id"
     app:layout_constraintStart_toEndOf="@id/decoded_char_id"
     app:layout_constraintEnd_toEndOf="parent"
-    android:text="<-Any of these?"
+    android:text="<- Any of these?"
     />
 
   <androidx.constraintlayout.widget.Guideline
@@ -115,7 +117,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    app:layout_constraintGuide_percent=".5"
+    app:layout_constraintGuide_percent=".66"
     />
 
   <Button
