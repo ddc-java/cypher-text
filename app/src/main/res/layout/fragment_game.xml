@@ -58,15 +58,35 @@
     android:text="Decoded Character"
     />
 
+  <Button
+    android:id="@+id/specific_hint_button_id"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    app:layout_constraintTop_toBottomOf="@id/encoded_label_id"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toStartOf="@+id/encoded_char_id"
+    android:text="What's this->"
+    />
+
   <com.google.android.material.textfield.TextInputEditText
     android:id="@+id/encoded_char_id"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     app:layout_constraintTop_toBottomOf="@id/encoded_label_id"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintEnd_toStartOf="@id/decoded_char_id"
+    app:layout_constraintStart_toEndOf="@id/specific_hint_button_id"
+    app:layout_constraintEnd_toStartOf="@id/decode_button_id"
     android:inputType="textCapCharacters"
     android:maxLength="1"
+    />
+
+  <Button
+    android:id="@+id/decode_button_id"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    app:layout_constraintTop_toBottomOf="@id/encoded_label_id"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    android:text="<- Swap ->"
     />
 
   <com.google.android.material.textfield.TextInputEditText
@@ -80,6 +100,16 @@
     android:maxLength="1"
     />
 
+  <Button
+    android:id="@+id/wof_hint_button_id"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    app:layout_constraintTop_toBottomOf="@id/encoded_label_id"
+    app:layout_constraintStart_toEndOf="@id/decoded_char_id"
+    app:layout_constraintEnd_toEndOf="parent"
+    android:text="<-Any of these?"
+    />
+
   <androidx.constraintlayout.widget.Guideline
     android:id="@+id/bottom_guide_id"
     android:layout_width="wrap_content"
@@ -89,13 +119,13 @@
     />
 
   <Button
-    android:id="@+id/decode_button_id"
+    android:id="@+id/random_hint_button_id"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     app:layout_constraintBottom_toTopOf="@id/bottom_guide_id"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
-    android:text="DECODE"
+    android:text="Gimme something!"
     />
 
 
