@@ -48,12 +48,16 @@ public class GameFragment extends Fragment {
     binding = FragmentGameBinding.inflate(inflater, container, false);
     binding.encodedCharId.addTextChangedListener(
         (SimpleTextWatcher) (editable) -> {
-        }
-    );
+          if (getEncodedChar().isEmpty()) {
+            binding.specificHintButtonId.setClickable(false);
+          } else {
+            binding.specificHintButtonId.setClickable(true);
+          }
+        });
     binding.decodedCharId.addTextChangedListener(
         (SimpleTextWatcher) (editable) -> {
-        }
-    );
+          getDecodedChar();
+        });
     binding.decodeButtonId.setOnClickListener((v) -> submitGuess());
     binding.specificHintButtonId.setOnClickListener((v) -> getSpecificHint());
     binding.wofHintButtonId.setOnClickListener((v) -> getWofHint());
@@ -110,7 +114,9 @@ public class GameFragment extends Fragment {
     viewModel.submitGuess(HINT_CHARACTER + HINT_CHARACTER);
   }
 
-  /** @noinspection DataFlowIssue*/
+  /**
+   * @noinspection DataFlowIssue
+   */
   private String getEncodedChar() {
     return binding.encodedCharId
         .getText()
@@ -118,7 +124,9 @@ public class GameFragment extends Fragment {
         .replaceAll(NON_CHAR_COMPARE, EMPTY);
   }
 
-  /** @noinspection DataFlowIssue*/
+  /**
+   * @noinspection DataFlowIssue
+   */
   private String getDecodedChar() {
     return binding.decodedCharId
         .getText()
