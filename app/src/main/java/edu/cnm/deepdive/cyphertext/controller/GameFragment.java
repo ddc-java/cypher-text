@@ -48,15 +48,13 @@ public class GameFragment extends Fragment {
     binding = FragmentGameBinding.inflate(inflater, container, false);
     binding.encodedCharId.addTextChangedListener(
         (SimpleTextWatcher) (editable) -> {
-          if (getEncodedChar().isEmpty()) {
-            binding.specificHintButtonId.setClickable(false);
-          } else {
-            binding.specificHintButtonId.setClickable(true);
-          }
+          binding.specificHintButtonId.setClickable(!getEncodedChar().isEmpty());
+          binding.decodeButtonId.setClickable(!getEncodedChar().isEmpty());
         });
     binding.decodedCharId.addTextChangedListener(
         (SimpleTextWatcher) (editable) -> {
-          getDecodedChar();
+          binding.wofHintButtonId.setClickable(!getDecodedChar().isEmpty());
+          binding.decodeButtonId.setClickable(!getEncodedChar().isEmpty());
         });
     binding.decodeButtonId.setOnClickListener((v) -> submitGuess());
     binding.specificHintButtonId.setOnClickListener((v) -> getSpecificHint());

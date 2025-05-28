@@ -133,7 +133,7 @@ public class GameService implements AbstractGameService {
         })
         .orElseThrow();
     game.setDecodedQuote(DecodeCypher(game));
-    game.setNumHints(gameCypherPairRepository.findGameCypherPairHints(game.getKey()).size());
+    game.setNumHints(gameCypherPairRepository.findGameCypherPairsHints(game.getKey()).size());
     game.setNumMoves(guessRepository.findByGameKey(game.getKey()).size());
     if(game.isSolved()) {
       game.setSolved();
@@ -195,6 +195,7 @@ public class GameService implements AbstractGameService {
       int cp = Character.codePointAt(textToEncrypt, i);
       if (Character.isAlphabetic(cp)) {
         cp = gameCypher.get(cp);
+
       }
       builder.append(Character.toChars(cp));
     }
@@ -241,7 +242,7 @@ public class GameService implements AbstractGameService {
   }
 
   private void setRandomHints(Game gameToPlay, int initialHintNum) {
-    GameCypherPair[] gcpArray = gameCypherPairRepository.findGameCypherPairByGameKey(gameToPlay.getKey()).toArray(new GameCypherPair[0]);
+    GameCypherPair[] gcpArray = gameCypherPairRepository.findGameCypherPairsByGameKey(gameToPlay.getKey()).toArray(new GameCypherPair[0]);
     int hintLimit = (initialHintNum >= gcpArray.length) ? gcpArray.length -1 : initialHintNum;
     for (int hintNum = 0; hintNum < hintLimit; hintNum++) {
       GameCypherPair gcp;
